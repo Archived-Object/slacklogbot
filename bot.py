@@ -19,8 +19,8 @@ def onCall():
     if ( all([ (i in request.form.keys()) for i in apitokens]) ):
         #because request.form.keys can't be cast to dict. FLASKU Y?
         d = dict( [(key, request.form[key]) for key in request.form.keys()] )
-        mongoconn.slacklogbot[str(request.form.channel_id)].insert(dict)
-        return "logging confirmed\n"
+        mongoconn.slacklogbot[str(request.form["channel_id"])].insert(d)
+        return "{text:\"logging confirmed\"}\n"
     return "i dun get my props..\n"
 
 def signal_handler(signal, frame):
