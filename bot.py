@@ -2,13 +2,15 @@ import flask, pymongo
 from flask import request
 import signal, sys
 
-app = flask.Flask(__name__)
-
 mongoport = 27017
 mongoaddr = "localhost"
 mongoconn = None
 
 hostport = 65152
+
+app = flask.Flask(__name__)
+app.config["SERVER_NAME"] = "127.0.0.1:"+str(hostport)
+
 
 apitokens = ["token", "team_id", "channel_id", "channel_name", "timestamp",
         "user_id", "user_name", "text"]
