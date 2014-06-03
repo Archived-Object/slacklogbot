@@ -1,0 +1,34 @@
+import flask, pymongo
+import signal, sys
+
+app = flask.Flask(__name__)
+
+mongoport = 27017
+mongoaddr = "localhost"
+mongoconn = None
+
+hostport = 65152
+
+apitokens = ["token", "team_id", "channel_id", "channel_name", "timestamp",
+        "user_id", "user_name", "text"]
+
+
+@app.route('/', methods=['POST'])
+def onCall():
+    if ( all([ (i in request.form.keys()) for i in apitokens]) ):
+        #because request.form.keys can't be cast to dict. FLASKU Y?
+        d = dict( [(key, request.form[key]) for key in request.form.keys()] )
+        print "inserting the", d
+        mongoconn.slacklogbot[str(request.form.channel_id)].insert(dict)
+
+
+def signal_handler(signal, frame):
+    #cleanup mongo connection n interrupt
+    mongoconn.disconnect();
+    sys.exit()
+
+if __name__ == "__main__":
+    mongoconn = pymongo.MongoClient(mongoaddr, mongoport)
+    signal.signal(signal.SIGINT, signal_handler)
+
+    app.run(debug=True)
