@@ -39,4 +39,4 @@ if __name__ == "__main__":
     mongoconn = pymongo.MongoClient(mongoaddr, mongoport)
     signal.signal(signal.SIGINT, signal_handler)
 
-    app.run(debug=True)
+    app.run(host='0.0.0.0')
