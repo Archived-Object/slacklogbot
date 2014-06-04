@@ -9,9 +9,6 @@ mongoconn = None
 hostport = 65152
 
 app = flask.Flask(__name__)
-app.config["SERVER_NAME"] = "127.0.0.1:"+str(hostport)
-
-
 apitokens = ["token", "team_id", "channel_id", "channel_name", "timestamp",
         "user_id", "user_name", "text"]
 
@@ -31,6 +28,12 @@ def signal_handler(signal, frame):
     sys.exit()
 
 if __name__ == "__main__":
+    if(len(sys.argv) > 1):
+        hostport = int(sys.argv[1])
+
+    app.config["SERVER_NAME"] = "127.0.0.1:"+str(hostport)
+
+
     mongoconn = pymongo.MongoClient(mongoaddr, mongoport)
     signal.signal(signal.SIGINT, signal_handler)
 
