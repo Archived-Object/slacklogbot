@@ -61,10 +61,10 @@ def parsecommand(form):
     if (len(spl)>1):
         if(spl[1] == u'help'):
                 return rs(
-                    "Commands:\\n"+
+                    "Commands:'"+
                     reduce(
-                        lambda a, b: a+"\\n    "+b, 
-                        commands
+                        lambda a, b: a+u'\\n'+b, 
+                        [ "\u2022    "+key for key in commands]
                     )
                 )
         elif (spl[1] in commands.keys()):
