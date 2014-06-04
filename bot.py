@@ -63,8 +63,8 @@ def parsecommand(form):
                 return rs(
                     "Commands:\\n"+
                     reduce(
-                        lambda a, b: a+" "+b, 
-                        [ "  "+key+"\\n" for key in commands]
+                        lambda a, b: a+"\\n    "+b, 
+                        commands
                     )
                 )
         elif (spl[1] in commands.keys()):
