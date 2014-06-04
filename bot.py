@@ -44,11 +44,13 @@ def onCall():
 
 
 def statsparser(spl):
-    return rs(
+    n = rs(
         "Stats for %s:\\n"%(form["channel_name"]) +
         "messages logged: %s\\n"%(db[form["channel_id"]].find().count()) +
         "started at: %s\\n"%(db[form["channel_id"]].find().min().timestamp)
         )
+    print n
+    return n
 
 commands = {
     "stats": statsparser
