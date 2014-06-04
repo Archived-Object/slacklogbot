@@ -65,7 +65,7 @@ def parsecommand(form):
                     "Commands:"+
                     [ "  "+key+"\n" for key in commands])
         elif (spl[1] in commands.keys()):
-            return statsparser["stats"]
+            return statsparser[spl[1]](form)
         else:
             return  rs("I don't know that command")
     else:
