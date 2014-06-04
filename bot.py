@@ -53,7 +53,7 @@ def statsparser(spl):
     return n
 
 commands = {
-    "stats": statsparser
+    u'stats': statsparser
 }
 
 def parsecommand(form):
