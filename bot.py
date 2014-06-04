@@ -12,8 +12,7 @@ app = flask.Flask(__name__)
 apitokens = ["token", "team_id", "channel_id", "channel_name", "timestamp",
         "user_id", "user_name", "text"]
 
-@app.route('/', defaults={'path': ''}, methods=['POST'])
-@app.route('/<path:path>')
+@app.route('/bot', methods=['POST'])
 def onCall():
     print "msg recieved"
     if ( all([ (i in request.form.keys()) for i in apitokens]) ):
