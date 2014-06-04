@@ -6,7 +6,7 @@ mongoport = 27017
 mongoaddr = "localhost"
 mongoconn = None
 
-hostport = 65152
+hostport = 8000
 
 app = flask.Flask(__name__)
 apitokens = ["token", "team_id", "channel_id", "channel_name", "timestamp",
@@ -28,6 +28,8 @@ def signal_handler(signal, frame):
     sys.exit()
 
 if __name__ == "__main__":
+    print "bootup"
+
     if(len(sys.argv) > 1):
         hostport = int(sys.argv[1])
 
