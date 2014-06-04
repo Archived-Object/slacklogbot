@@ -1,5 +1,5 @@
 import flask, pymongo
-from flask import request
+from flask import request, Flask
 import signal, sys
 
 mongoport = 27017
@@ -23,10 +23,7 @@ if __name__ == "__main__":
     mongoconn = pymongo.MongoClient(mongoaddr, mongoport)
     signal.signal(signal.SIGINT, signal_handler)
 
-
-
 app.config["SERVER_NAME"] = "127.0.0.1:"+str(hostport)
-
 
 @app.route('/bot', methods=['POST'])
 def onCall():
