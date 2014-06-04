@@ -23,7 +23,7 @@ if __name__ == "__main__":
     mongoconn = pymongo.MongoClient(mongoaddr, mongoport)
     signal.signal(signal.SIGINT, signal_handler)
 
-app.config["SERVER_NAME"] = "127.0.0.1:"+str(hostport)
+app.config["SERVER_NAME"] = "is-limbics.com:"+str(hostport)
 
 @app.route('/bot', methods=['POST'])
 def onCall():
