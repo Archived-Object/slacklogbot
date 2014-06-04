@@ -25,8 +25,6 @@ if __name__ == "__main__":
     db = mongoconn.slacklogbot
     signal.signal(signal.SIGINT, signal_handler)
 
-app.config["SERVER_NAME"] = "is-limbics.com:"+str(hostport)
-
 @app.route('/bot', methods=['POST'])
 def onCall():
     if ( all([ (i in request.form.keys()) for i in apitokens]) ):
@@ -53,7 +51,8 @@ def statsparser(spl):
     return n
 
 commands = {
-    u'stats': statsparser
+    u'stats': statsparser,
+    u'fuck': lambda a: rs(u'(\uFF61 \u2256 \u0E34 \u203F \u2256 \u0E34)')
 }
 
 def parsecommand(form):
@@ -62,10 +61,14 @@ def parsecommand(form):
     if (len(spl)>1):
         if(spl[1] == u'help'):
                 return rs(
-                    "Commands:"+
-                    [ "  "+key+"\n" for key in commands])
+                    "Commands:\\n"+
+                    reduce(
+                        lambda a, b: a+" "+b, 
+                        [ "  "+key+"\\n" for key in commands]
+                    )
+                )
         elif (spl[1] in commands.keys()):
-            return statsparser[spl[1]](form)
+            return commands[spl[1]](form)
         else:
             return  rs("I don't know that command")
     else:
@@ -76,4 +79,4 @@ def rs(string):
     return "{\"text\": \"%s\"}"%(string)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=hostport, debug=True)
