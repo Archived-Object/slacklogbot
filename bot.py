@@ -29,34 +29,39 @@ app.config["SERVER_NAME"] = "is-limbics.com:"+str(hostport)
 
 @app.route('/bot', methods=['POST'])
 def onCall():
-    print "msg recieved"
     if ( all([ (i in request.form.keys()) for i in apitokens]) ):
+        print "msg recieved"
         if request.form["text"].startswith("logbot"):
+            print "pushing msg to logbot"
             return parsecommand(request.form)
         
         #because request.form.keys can't be cast to dict. FLASKU Y?
         d = dict( [(key, request.form[key]) for key in request.form.keys()] )
         db[str(request.form["channel_id"])].insert(d)
+    else:
+        print "msg rejected"
     return ""
 
 
 def parsecommand(form):
     spl = form["text"].split(" ")
 
-    if(spl[1] == "help"):
-            return ms(
-                slacklogbot
+    if (len(spl)>1):
+        if(spl[1] == "help"):
+                return rs(
+                    slacklogbot
+                    )
+        elif(spl[1] == "stats"):
+            return rs(
+                "Stats for %s:\\n"%(form["channel_name"]) +
+                "messages logged: %s\\n"%(db[form["channel_id"]].find().count()) +
+                "started at: %s\\n"%(db[form["channel_id"]].find().min().timestamp)
                 )
-    elif(spl[1] == "stats"):
-        return ms(
-            "Stats for %s:\\n"%(form["channel_name"]) +
-            "messages logged: %s\\n"%(db[form["channel_id"]].find().count()) +
-            "started at: %s\\n"%(db[form["channel_id"]].find().min().timestamp)
-            )
     else:
         return rs("what?")
 
 def rs(string):
+    print 
     return "{\"text\": \"%s\"}"%(string)
 
 if __name__ == "__main__":
