@@ -32,8 +32,9 @@ def onCall():
         #because request.form.keys can't be cast to dict. FLASKU Y?
         d = dict( [(key, request.form[key]) for key in request.form.keys()] )
         mongoconn.slacklogbot[str(request.form["channel_id"])].insert(d)
-        return "{text:\"logging confirmed\"}\n"
-    return "i dun get my props..\n"
+        return "{\"text\": \"logging confirmed\"}\n"
+    #return "i dun get my props..\n"
+    return ""
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
