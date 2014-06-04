@@ -6,13 +6,14 @@ mongoport = 27017
 mongoaddr = "localhost"
 mongoconn = None
 
-hostport = 8000
+hostport = 65152
 
 app = flask.Flask(__name__)
 apitokens = ["token", "team_id", "channel_id", "channel_name", "timestamp",
         "user_id", "user_name", "text"]
 
-@app.route('/', methods=['POST'])
+@app.route('/', defaults={'path': ''}, methods=['POST'])
+@app.route('/<path:path>')
 def onCall():
     print "msg recieved"
     if ( all([ (i in request.form.keys()) for i in apitokens]) ):
