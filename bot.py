@@ -45,13 +45,13 @@ def onCall():
 
 def parsecommand(form):
     spl = form["text"].split(" ")
-
+    print spl
     if (len(spl)>1):
-        if(spl[1] == "help"):
+        if(spl[1] == u"help"):
                 return rs(
                     slacklogbot
                     )
-        elif(spl[1] == "stats"):
+        elif(spl[1] == u"stats"):
             return rs(
                 "Stats for %s:\\n"%(form["channel_name"]) +
                 "messages logged: %s\\n"%(db[form["channel_id"]].find().count()) +
