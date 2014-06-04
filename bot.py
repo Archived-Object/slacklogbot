@@ -43,20 +43,29 @@ def onCall():
     return ""
 
 
+def statsparser(spl):
+    return rs(
+        "Stats for %s:\\n"%(form["channel_name"]) +
+        "messages logged: %s\\n"%(db[form["channel_id"]].find().count()) +
+        "started at: %s\\n"%(db[form["channel_id"]].find().min().timestamp)
+        )
+
+commands = {
+    "stats": statsparser
+}
+
 def parsecommand(form):
     spl = form["text"].split(" ")
     print spl
     if (len(spl)>1):
-        if(spl[1] == u"help"):
+        if(spl[1] == u'help'):
                 return rs(
-                    slacklogbot
-                    )
-        elif(spl[1] == u"stats"):
-            return rs(
-                "Stats for %s:\\n"%(form["channel_name"]) +
-                "messages logged: %s\\n"%(db[form["channel_id"]].find().count()) +
-                "started at: %s\\n"%(db[form["channel_id"]].find().min().timestamp)
-                )
+                    "Commands:"+
+                    [ "  "+key+"\n" for key in commands])
+        elif (spl[1] in commands.keys()):
+            return statsparser["stats"]
+        else:
+            return  rs("I don't know that command")
     else:
         return rs("what?")
 
