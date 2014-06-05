@@ -46,8 +46,8 @@ def statsparser(form, spl):
     timestamp = db[form["channel_id"]].find().sort(
                 [("timestamp", 1)] ).limit(1).next()["timestamp"] 
             
-    old_msg = datetime.datetime.fromtimestamp(int(timestamp)).strftime('%Y-%m-%d %H:%M:%S')
-    initial_time = datetime.datetime.fromtimestamp(int(originaltime)).strftime('%Y-%m-%d %H:%M:%S')
+    old_msg = datetime.datetime.fromtimestamp(float(timestamp)).strftime('%Y-%m-%d %H:%M:%S')
+    initial_time = datetime.datetime.fromtimestamp(float(originaltime)).strftime('%Y-%m-%d %H:%M:%S')
 
     n = rs(
         "Stats for %s:\\n"%(form["channel_name"]) +
