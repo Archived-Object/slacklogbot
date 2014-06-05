@@ -28,31 +28,33 @@ if __name__ == "__main__":
 @app.route('/bot', methods=['POST'])
 def onCall():
     if ( all([ (i in request.form.keys()) for i in apitokens]) ):
-        print "msg recieved"
-        if request.form["text"].startswith("logbot"):
-            print "pushing msg to logbot"
-            return parsecommand(request.form)
-        
+        print "msg recieved"        
         #because request.form.keys can't be cast to dict. FLASKU Y?
         d = dict( [(key, request.form[key]) for key in request.form.keys()] )
         db[str(request.form["channel_id"])].insert(d)
+        if request.form["text"].startswith("logbot"):
+            print "pushing msg to logbot"
+            return parsecommand(request.form)
     else:
         print "msg rejected"
     return ""
 
 
-def statsparser(spl):
+def statsparser(form, spl):
     n = rs(
         "Stats for %s:\\n"%(form["channel_name"]) +
         "messages logged: %s\\n"%(db[form["channel_id"]].find().count()) +
-        "started at: %s\\n"%(db[form["channel_id"]].find().min().timestamp)
+        "started at: %s\\n"%(
+            db[form["channel_id"]].find().sort(
+                [("timestamp", 1)] ).limit(1).next()["timestamp"] 
+            )
         )
     print n
     return n
 
 commands = {
     u'stats': statsparser,
-    u'fuck': lambda a: rs(u'(\uFF61 \u2256 \u0E34 \u203F \u2256 \u0E34)')
+    u'fuck': lambda a, b: rs(u'(\uFF61 \u2256 \u0E34 \u203F \u2256 \u0E34)')
 }
 
 def parsecommand(form):
@@ -68,7 +70,7 @@ def parsecommand(form):
                     )
                 )
         elif (spl[1] in commands.keys()):
-            return commands[spl[1]](form)
+            return commands[spl[1]](form, spl)
         else:
             return  rs("I don't know that command")
     else:
