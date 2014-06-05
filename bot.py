@@ -1,13 +1,13 @@
 import flask, pymongo
 from flask import request, Flask
-import signal, sys, time
+import signal, sys, time, datetime
 
 mongoport = 27017
 mongoaddr = "localhost"
 mongoconn = None
 db = None
 
-time = time.time()
+originaltime = time.time()
 
 hostport = 65152
 
@@ -47,7 +47,7 @@ def statsparser(form, spl):
                 [("timestamp", 1)] ).limit(1).next()["timestamp"] 
             
     old_msg = datetime.datetime.fromtimestamp(int(timestamp)).strftime('%Y-%m-%d %H:%M:%S')
-    intial_time = datetime.datetime.fromtimestamp(int(originaltime)).strftime('%Y-%m-%d %H:%M:%S')
+    initial_time = datetime.datetime.fromtimestamp(int(originaltime)).strftime('%Y-%m-%d %H:%M:%S')
 
     n = rs(
         "Stats for %s:\\n"%(form["channel_name"]) +
