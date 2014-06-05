@@ -1,6 +1,6 @@
 import flask, pymongo
 from flask import request, Flask
-import signal, sys, timr
+import signal, sys, time
 
 mongoport = 27017
 mongoaddr = "localhost"
