@@ -1,11 +1,13 @@
 import flask, pymongo
 from flask import request, Flask
-import signal, sys
+import signal, sys, timr
 
 mongoport = 27017
 mongoaddr = "localhost"
 mongoconn = None
 db = None
+
+time = time.time()
 
 hostport = 65152
 
@@ -41,14 +43,17 @@ def onCall():
 
 
 def statsparser(form, spl):
+    timestamp = db[form["channel_id"]].find().sort(
+                [("timestamp", 1)] ).limit(1).next()["timestamp"] 
+            );
+    old_msg = datetime.datetime.fromtimestamp(int(timestamp)).strftime('%Y-%m-%d %H:%M:%S'))
+    intial_time = datetime.datetime.fromtimestamp(int(originaltime)).strftime('%Y-%m-%d %H:%M:%S'))
+
     n = rs(
         "Stats for %s:\\n"%(form["channel_name"]) +
         "messages logged: %s\\n"%(db[form["channel_id"]].find().count()) +
-        "started at: %s\\n"%(
-            db[form["channel_id"]].find().sort(
-                [("timestamp", 1)] ).limit(1).next()["timestamp"] 
-            )
-        )
+        "oldest msg: %s\\n"%( old_msg )
+        "last restart: %s\\n"%( initial_time )
     print n
     return n
 
