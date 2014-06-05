@@ -52,7 +52,7 @@ def statsparser(form, spl):
     n = rs(
         "Stats for %s:\\n"%(form["channel_name"]) +
         "messages logged: %s\\n"%(db[form["channel_id"]].find().count()) +
-        "oldest msg: %s\\n"%( old_msg )
+        "oldest msg: %s\\n"%( old_msg ) +
         "last restart: %s\\n"%( initial_time ) )
     print n
     return n
