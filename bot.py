@@ -45,7 +45,7 @@ def onCall():
 def statsparser(form, spl):
     timestamp = db[form["channel_id"]].find().sort(
                 [("timestamp", 1)] ).limit(1).next()["timestamp"] 
-            );
+            
     old_msg = datetime.datetime.fromtimestamp(int(timestamp)).strftime('%Y-%m-%d %H:%M:%S'))
     intial_time = datetime.datetime.fromtimestamp(int(originaltime)).strftime('%Y-%m-%d %H:%M:%S'))
 
@@ -53,7 +53,7 @@ def statsparser(form, spl):
         "Stats for %s:\\n"%(form["channel_name"]) +
         "messages logged: %s\\n"%(db[form["channel_id"]].find().count()) +
         "oldest msg: %s\\n"%( old_msg )
-        "last restart: %s\\n"%( initial_time )
+        "last restart: %s\\n"%( initial_time ) )
     print n
     return n
 
