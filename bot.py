@@ -5,7 +5,11 @@ import signal, sys, time, datetime
 db = None
 mongoconn = None
 
+cfg = None
+
 originaltime = time.time()
+
+#signal handling for shutdown on SIGINT
 
 def signal_handler(signal, frame):
 	#cleanup mongo connection n interrupt
@@ -13,12 +17,11 @@ def signal_handler(signal, frame):
 	sys.exit()
 
 app = flask.Flask(__name__)
-apitokens = ["token", "team_id", "channel_id", "channel_name", "timestamp",
-		"user_id", "user_name", "text"]
+
 
 @app.route('/bot', methods=['POST'])
 def onCall():
-	if ( all([ (i in request.form.keys()) for i in apitokens]) ):
+	if ( all([ (i in request.form.keys()) for i in cfg["required_tokens"] ]) ):
 		print "msg recieved"        
 		#because request.form.keys can't be cast to dict. FLASKU Y?
 		d = dict( [(key, request.form[key]) for key in request.form.keys()] )
@@ -35,21 +38,26 @@ def statsparser(form, spl):
 	timestamp = db[form["channel_id"]].find().sort(
 				[("timestamp", 1)] ).limit(1).next()["timestamp"] 
 			
-	old_msg = datetime.datetime.fromtimestamp(float(timestamp)).strftime('%Y-%m-%d %H:%M:%S')
-	initial_time = datetime.datetime.fromtimestamp(float(originaltime)).strftime('%Y-%m-%d %H:%M:%S')
+	old_msg = datetime.datetime.fromtimestamp(
+					float(timestamp)
+				).strftime('%Y-%m-%d %H:%M:%S')
+	initial_time = datetime.datetime.fromtimestamp(
+					float(originaltime)
+				).strftime('%Y-%m-%d %H:%M:%S')
 
 	n = rs(
 		"Stats for %s:\\n"%(form["channel_name"]) +
 		"messages logged: %s\\n"%(db[form["channel_id"]].find().count()) +
 		"oldest msg: %s\\n"%( old_msg ) +
 		"last restart: %s\\n"%( initial_time ) )
-	print n
-	return n
 
 commands = {
 	u'stats': statsparser,
 	u'fuck': lambda a, b: rs(u'(\uFF61 \u2256 \u0E34 \u203F \u2256 \u0E34)')
 }
+
+
+#loading cfg and launch
 
 def parsecommand(form):
 	spl = form["text"].split(" ")
@@ -74,6 +82,14 @@ def rs(string):
 	print 
 	return "{\"text\": \"%s\"}"%(string)
 
+
+
+
+
+
+
+#loading
+
 def loadcfg(fname, fallback=True):
 	try:
 		f = open(fname)
@@ -82,7 +98,7 @@ def loadcfg(fname, fallback=True):
 		return config
 	except Exception as e:
 		print e
-		
+
 		if(fallback):
 			print "error loading config from %s, reverting to defaults"%(fname)
 			return {
