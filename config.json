@@ -1,0 +1,8 @@
+{	"mongoport": 27017,
+	"mongoaddr": "localhost",
+	"hostport" : 65152,
+	"required_tokens" : ["token", "team_id",
+						"channel_id", "channel_name",
+						"timestamp", "user_id",
+						"user_name", "text" ]
+}

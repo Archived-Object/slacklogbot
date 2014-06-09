@@ -4,20 +4,16 @@ import signal, sys, time, datetime
 
 db = None
 mongoconn = None
-
 cfg = None
 
 originaltime = time.time()
-
-#signal handling for shutdown on SIGINT
-
-def signal_handler(signal, frame):
-	#cleanup mongo connection n interrupt
-	mongoconn.disconnect();
-	sys.exit()
-
 app = flask.Flask(__name__)
 
+
+
+#################################
+#             Pages             #
+#################################
 
 @app.route('/bot', methods=['POST'])
 def onCall():
@@ -33,6 +29,11 @@ def onCall():
 		print "msg rejected"
 	return ""
 
+
+
+#################################
+#          logbot cmds          #
+#################################
 
 def statsparser(form, spl):
 	timestamp = db[form["channel_id"]].find().sort(
@@ -51,13 +52,31 @@ def statsparser(form, spl):
 		"oldest msg: %s\\n"%( old_msg ) +
 		"last restart: %s\\n"%( initial_time ) )
 
+def listnotes(form, spl):
+	db[form["channel_id"]+"_notes"].find("live")
+
+def recordnote(form, spl):
+	db[form["channel_id"]+"_notes"].insert({
+		"text": " ".join(spl[1:]),
+		"time": form["timestamp"],
+		"live": 1 
+		})
+
+def removenote(form, spl):
+	pass
+
+
+#################################
+#            parseing           #
+#################################
+
 commands = {
 	u'stats': statsparser,
 	u'fuck': lambda a, b: rs(u'(\uFF61 \u2256 \u0E34 \u203F \u2256 \u0E34)')
+	u'notes': listnotes,
+	u'note': recordnote,
+	u'removenote': removenote
 }
-
-
-#loading cfg and launch
 
 def parsecommand(form):
 	spl = form["text"].split(" ")
@@ -84,11 +103,16 @@ def rs(string):
 
 
 
+#################################
+#    loading cfg and launch     #
+#################################
 
+#signal handling for shutdown on SIGINT
+def signal_handler(signal, frame):
+	#cleanup mongo connection n interrupt
+	mongoconn.disconnect();
+	sys.exit()
 
-
-
-#loading
 
 def loadcfg(fname, fallback=True):
 	try:
@@ -109,20 +133,19 @@ def loadcfg(fname, fallback=True):
 		else:
 			return None
 
-if __name__ == "__main__":
-	#load config
-	if len(sys.argv) > 1:
-		cfg = loadcfg(sys.argv[1],False)
-		if not cfg:
-			cfg = loadcfg("./config.json")
-	else:
+#load config
+if len(sys.argv) > 1:
+	cfg = loadcfg(sys.argv[1],False)
+	if not cfg:
 		cfg = loadcfg("./config.json")
+else:
+	cfg = loadcfg("./config.json")
 
-	try:
-		mongoconn = pymongo.MongoClient(cfg["mongoaddr"], cfg["mongoport"])
-		db = mongoconn.slacklogbot
-		signal.signal(signal.SIGINT, signal_handler)
+try:
+	mongoconn = pymongo.MongoClient(cfg["mongoaddr"], cfg["mongoport"])
+	db = mongoconn.slacklogbot
+	signal.signal(signal.SIGINT, signal_handler)
 
-		app.run(host='0.0.0.0', port=cfg["hostport"], debug=True)
-	except pymongo.errors.ConnectionFailure:
-		print "error connecting to mongodb database"
+	app.run(host='0.0.0.0', port=cfg["hostport"], debug=True)
+except pymongo.errors.ConnectionFailure:
+	print "error connecting to mongodb database"
