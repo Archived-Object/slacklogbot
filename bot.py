@@ -46,7 +46,7 @@ def statsparser(form, spl):
 					float(originaltime)
 				).strftime('%Y-%m-%d %H:%M:%S')
 
-	n = rs(
+	return rs(
 		"Stats for %s:\\n"%(form["channel_name"]) +
 		"messages logged: %s\\n"%(db[form["channel_id"]].find().count()) +
 		"oldest msg: %s\\n"%( old_msg ) +
