@@ -72,10 +72,10 @@ def removenote(form, spl):
 
 commands = {
 	u'stats': statsparser,
-	u'fuck': lambda a, b: rs(u'(\uFF61 \u2256 \u0E34 \u203F \u2256 \u0E34)')
-	u'notes': listnotes,
-	u'note': recordnote,
-	u'removenote': removenote
+	u'fuck': lambda a, b: rs(u'(\uFF61 \u2256 \u0E34 \u203F \u2256 \u0E34)'),
+#	u'notes': listnotes,
+#	u'note': recordnote,
+#	u'removenote': removenote.
 }
 
 def parsecommand(form):
