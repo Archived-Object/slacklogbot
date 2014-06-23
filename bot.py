@@ -118,7 +118,7 @@ def statsparser(form, spl):
 					float(originaltime)
 				).strftime('%Y-%m-%d %H:%M:%S')
 
-	link_to_log = "http://%s/log/%s"%(cfg["hostname"], form["channel_id"])
+	link_to_log = "http://%s:%s/log/%s"%(cfg["hostname"], cfg["hostport"], form["channel_id"])
 
 	return rs(
 		("Stats for %s:\\n"+
