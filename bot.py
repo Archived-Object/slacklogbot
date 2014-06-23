@@ -1,5 +1,5 @@
 import flask, pymongo, json
-from flask import request, Flask
+from flask import request, Flask, render_template
 import signal, sys, time, datetime
 
 db = None
@@ -20,16 +20,87 @@ def onCall():
 	if ( all([ (i in request.form.keys()) for i in cfg["required_tokens"] ]) ):
 		print "msg recieved"        
 		#because request.form.keys can't be cast to dict. FLASKU Y?
-		d = dict( [(key, request.form[key]) for key in request.form.keys()] )
+		d = dict( [(key, 
+			(int(request.form[key])
+				if request.form[key].isdigit() else
+					request.form[key]) 
+			) for key in request.form.keys()] )
 		db[str(request.form["channel_id"])].insert(d)
+		save_channel_alias(
+			request.form["channel_name"],
+			request.form["channel_id"])
+
 		if request.form["text"].startswith("logbot"):
 			print "pushing msg to logbot"
 			return parsecommand(request.form)
 	else:
-		print "msg rejected"
+		return rs("msg rejected: did not have required parameters (%s)}"%(
+			", ".join([ i for i in cfg["required_tokens"] if i not in request.form.keys() ])
+		))
 	return ""
 
+@app.route('/log/<channel>')
+def serveLog(channel):
 
+	channel_id = get_channel_alias(channel)
+	if channel_id is None:
+		return render_template("error.html", msg="no channel '%s'"%(channel) )
+	elif not channel_id:
+		channel_id = channel
+
+	log_json = udict_to_ascii(dict(logBackend(channel_id)))
+
+	return render_template("log.html",
+		channel_id=channel_id,
+		channel_name=channel,
+		content=log_json)
+
+@app.route('/log/backend/<channel_name>/<timestamp>/<number>')
+@app.route('/log/backend/<channel_name>/<timestamp>')
+@app.route('/log/backend/<channel_name>/')
+def serveLogBackend(channel_name, timestamp=0, number=10):
+	try:
+		return str(
+			udict_to_ascii(dict( 
+				logBackend(channel_name, int(timestamp), number) 
+			))
+		)
+	except ValueError:
+		return "!that's not a number, dummy!"
+
+
+def logBackend(channel_id, timestamp=0, backwards=True, number=10):
+	posts=[]
+
+	recent_n = db[channel_id].find(
+		({"timestamp":{"$lt": timestamp}} if timestamp !=0 else {})
+		).sort([("timestamp",-1)]).limit(number)
+
+	if timestamp == 0:
+		timestamp = recent_n[recent_n.count()-1]["timestamp"]
+
+	posts = list(recent_n)
+	
+	if len(posts) == 0:
+		return "no posts timestamp < %s"%(timestamp)
+
+	old = min(posts, key=lambda a: a["timestamp"])
+	new = max(posts, key=lambda a: a["timestamp"])
+
+	return {"data" : posts, 
+			"oldest" : { 
+					"timestamp" : old["timestamp"], 
+					"_id" : old["_id"], 
+				},
+			"newest" : { 
+					"timestamp" : new["timestamp"], 
+					"_id" : new["_id"], 
+				}
+			} 
+
+@app.route('/error')
+def serveError():
+	return render_template("error.html",msg="nothing went wrong")
 
 #################################
 #          logbot cmds          #
@@ -46,11 +117,19 @@ def statsparser(form, spl):
 					float(originaltime)
 				).strftime('%Y-%m-%d %H:%M:%S')
 
+	link_to_log = "http://%s/log/%s"%(cfg["hostname"], form["channel_id"])
+
 	return rs(
-		"Stats for %s:\\n"%(form["channel_name"]) +
-		"messages logged: %s\\n"%(db[form["channel_id"]].find().count()) +
-		"oldest msg: %s\\n"%( old_msg ) +
-		"last restart: %s\\n"%( initial_time ) )
+		("Stats for %s:\\n"+
+		"messages logged: %s\\n" +
+		"oldest msg: %s\\n" +
+		"last restart: %s\\n"+
+		"see full log at %s")%(
+			form["channel_name"],
+			db[form["channel_id"]].find().count(),
+			old_msg,
+			initial_time,
+			link_to_log ))
 
 def listnotes(form, spl):
 	db[form["channel_id"]+"_notes"].find("live")
@@ -65,10 +144,16 @@ def recordnote(form, spl):
 def removenote(form, spl):
 	pass
 
+def reloadcfg(form, spl):
+	filename = "./config.json" if len(spl)<=2 else spl[2]
+	d = loadcfg(filename, False)
+	if d is not None:
+		return rs("loaded config %s"%(filename))
+	else:
+		return rs("failed to load config %s"%(filename))
 
-#################################
-#            parseing           #
-#################################
+
+
 
 commands = {
 	u'stats': statsparser,
@@ -76,7 +161,12 @@ commands = {
 #	u'notes': listnotes,
 #	u'note': recordnote,
 #	u'removenote': removenote.
+	u'reload': reloadcfg
 }
+
+#################################
+#            parseing           #
+#################################
 
 def parsecommand(form):
 	spl = form["text"].split(" ")
@@ -101,6 +191,53 @@ def rs(string):
 	print 
 	return "{\"text\": \"%s\"}"%(string)
 
+
+
+#################################
+#        helper methods         #
+#################################
+
+#saving aliases for channel ids
+def save_channel_alias(alias, channel_id):
+	#check if it exists in the database
+	if ("aliases" in db.collection_names() and 
+			db.aliases.find({"alias":alias}).count() > 0 ):
+		return False
+	else:
+		db.aliases.insert({"alias":alias, "id": channel_id})
+
+#serving aliases for channel ids
+def get_channel_alias(alias):
+	if not "aliases" in db.collection_names():
+		return False
+	else:
+		x = db.aliases.find_one({"alias":alias});
+		if x:
+			return (x["id"])
+		else:
+			return None
+
+
+def udict_to_ascii(jayson):
+	return dict([
+		(
+			(d, udict_to_ascii(jayson[d]))
+				if (isinstance(jayson[d], dict) or isinstance(jayson[d], list)) else
+			(
+				( unicode_or_not(d), unicode_or_not(jayson[d]))
+			)
+		)
+		for d in (
+				jayson if isinstance(jayson, dict)
+				else range(len(jayson))
+			)
+	])
+
+def unicode_or_not(c):
+	return c.encode("ascii","xmlcharrefreplace") if isinstance(c,unicode) else c
+
+def password_auth():
+	pass
 
 
 #################################

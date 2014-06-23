@@ -4,5 +4,8 @@
 	"required_tokens" : ["token", "team_id",
 						"channel_id", "channel_name",
 						"timestamp", "user_id",
-						"user_name", "text" ]
+						"user_name", "text" ],
+	"hostname":"localhost",
+	"password_hash":"",
+	"password_salt":"thisismysaltyhash<3<3<3"
 }

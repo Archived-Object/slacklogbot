@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <title>Logbot::{{ channel_name }}</title>
+  <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Raleway:400,300,500,600'>
+  <link rel="stylesheet" href="{{url_for('static', filename='common.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='log.css')}}">
+
+</head>
+<body>
+  <section id="wrapper">
+    <button id = "load_previous">Previous</button>
+
+    <section id = "postsArea">
+      
+    </section>
+
+    <button id = "load_next">Next</button>
+  </section>
+
+  <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+  <script src="{{url_for('static', filename='jquery.timeago.js')}}"></script>
+  <script src="{{url_for('static', filename='prettydate.js')}}"></script>
+
+  <!-- TODO AJAX-SAMA -->
+  <script>
+  var timestamp_old = null;
+  var timestamp_new = null;
+  var initial_json = {{ content|safe }};
+
+  function ObjectId(c){
+    return c
+  }
+
+  $("#load_previous").click(function(){
+    console.log("previous");
+    $.ajax("backend/{{ channel_id }}/"+timestamp_old,
+      {
+        success: function(data){
+          console.log(data);
+          if (data.length > 0 && data.charAt(0) != "!"){
+            var newj = eval("(" + data + ")");
+            timestamp_old = newj.oldest.timestamp;
+            parseJson( newj , true);
+          } else{
+            //TODO flash error
+          }
+        },
+        error: function(jqXHR, textStatus, errorThrow){
+          console.log(textStatus);
+          console.log(errorThrow);
+        }
+      });
+  })
+
+  $("#load_next").click(function(){
+    console.log("next")
+  })
+
+  $(document).ready(function(){
+    timestamp_old = initial_json.oldest.timestamp;
+    timestamp_new = initial_json.newest.timestamp;
+    parseJson(initial_json, false)
+  });
+
+  function loadNext(){
+      $.ajax("/log/backend/"+most_recent+"/");
+  }
+
+  function parseJson(j, animate) {
+    for (var key in j.data) {
+      var date = new Date(0);
+      date.setUTCSeconds(j.data[key].timestamp.toString()/1000);
+
+      newelement =           $("<section class='post'>" + 
+
+              "<section class='info'>" + 
+                "<section class='userid'>" +
+                  j.data[key].user_id +
+                "<\/section>" +
+
+                "<img src='http://placehold.it/42x42' alt='icon'>" + 
+                "<section class='bloque'>" +
+                "<section class='username'>" +
+                  j.data[key].user_name +
+                "<\/section>" +
+
+                "<section class='timestamp'>" +
+                  "<a href='/log/{{ channel_name }}/"+ j.data[key]._id +"'>" +
+                   date.toString() + "</a>"+
+                "<\/section>" +
+                "<\/section>"+
+              "<\/section>" +
+              
+              "<section class='text'>" +
+                j.data[key].text +
+              "<\/section>" +
+            "<\/section");
+
+      if (j.data[key].timestamp < this.timestamp_new){
+        if (animate) {
+            newelement.prependTo($("#postsArea")).slideUp(1).slideDown(400);
+          } else{
+            newelement.prependTo($("#postsArea"));
+          }
+      } else{        
+        if (animate) {
+            newelement.appendTo($("#postsArea")).slideUp(1).slideDown(400);
+          } else{
+            newelement.appendTo($("#postsArea"));
+          }
+      }
+    }
+  }
+
+
+  </script>
+</body>
+</html>

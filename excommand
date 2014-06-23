@@ -1,0 +1,1 @@
+curl localhost:65152/bot --data "token=fake_token&team_id=team_id&channel_id=fake_channel&channel_name=fake_channel_name&timestamp=1&user_id=fake_uid&user_name=fake_user&text=test_text"
