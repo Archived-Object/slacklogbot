@@ -34,6 +34,7 @@ def onCall():
 			print "pushing msg to logbot"
 			return parsecommand(request.form)
 	else:
+		print "msg rejected - tokens"
 		return rs("msg rejected: did not have required parameters (%s)}"%(
 			", ".join([ i for i in cfg["required_tokens"] if i not in request.form.keys() ])
 		))
