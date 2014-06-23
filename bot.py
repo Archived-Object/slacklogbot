@@ -18,7 +18,7 @@ app = flask.Flask(__name__)
 @app.route('/bot', methods=['POST'])
 def onCall():
 	if ( all([ (i in request.form.keys()) for i in cfg["required_tokens"] ]) ):
-		print "msg recieved"        
+		print "msg recieved"
 		#because request.form.keys can't be cast to dict. FLASKU Y?
 		d = dict( [(key, 
 			(int(request.form[key])
