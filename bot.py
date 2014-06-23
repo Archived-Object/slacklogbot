@@ -149,6 +149,7 @@ def reloadcfg(form, spl):
 	filename = "./config.json" if len(spl)<=2 else spl[2]
 	d = loadcfg(filename, False)
 	if d is not None:
+		cfg = d
 		return rs("loaded config %s"%(filename))
 	else:
 		return rs("failed to load config %s"%(filename))
