@@ -43,7 +43,7 @@ def onCall():
 @app.route('/log/<channel>')
 def serveLog(channel):
 
-	channel_id = get_channel_alias(channel)
+	channel_id = (get_channel_alias(channel) if (channel not in db.collection_names()) else channel)
 	if channel_id is None:
 		return render_template("error.html", msg="no channel '%s'"%(channel) )
 	elif not channel_id:
