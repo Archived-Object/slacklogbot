@@ -15,7 +15,7 @@ app = flask.Flask(__name__)
 #             Pages             #
 #################################
 
-@app.route('/bot', methods=['POST'])
+@app.route('/bot', methods=['POST','GET'])
 def onCall():
 	if ( all([ (i in request.form.keys()) for i in cfg["required_tokens"] ]) ):
 		print "msg recieved"
