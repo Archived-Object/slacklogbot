@@ -51,7 +51,7 @@ def serveLog(channel):
 		channel_id = channel
 
 	log_json = json.dumps(makeSerializable(dict(logBackend(channel_id))))
-	
+
 	return render_template("log.html",
 		channel_id=channel_id,
 		channel_name=channel,
@@ -60,13 +60,14 @@ def serveLog(channel):
 @app.route('/log/backend/<channel_name>/<timestamp>/<number>')
 @app.route('/log/backend/<channel_name>/<timestamp>')
 @app.route('/log/backend/<channel_name>/')
-def serveLogBackend(channel_name, timestamp=0, number=10):
+def serveLogBackend(channel_name, timestamp="0", number="10"):
 	try:
-		return str(
-			udict_to_ascii(dict( 
-				logBackend(channel_name, int(timestamp), number) 
+		return json.dumps(makeSerializable(dict(
+			logBackend(channel_name,
+				timestamp,
+				float(number)
+				)
 			))
-		)
 	except ValueError:
 		return "!that's not a number, dummy!"
 
