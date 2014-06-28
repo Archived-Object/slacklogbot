@@ -61,25 +61,31 @@ def serveLog(channel):
 @app.route('/log/backend/<channel_name>/<timestamp>')
 @app.route('/log/backend/<channel_name>/')
 def serveLogBackend(channel_name, timestamp="0", number="10"):
+	ts, n = (0, 0)
 	try:
-		return json.dumps(makeSerializable(dict(
-			logBackend(channel_name,
-				float(timestamp),
-				int(number)
-				)
-			)))
+		ts = float(timestamp)
+		n = int(number)
 	except ValueError:
 		return "!that's not a number, dummy!"
+	
+	print ts, n;
+
+	return json.dumps(makeSerializable(dict(
+		logBackend(
+				get_channel_alias(channel_name),
+				ts, n
+			)
+		)))
 
 
-def logBackend(channel_id, timestamp=0, backwards=True, number=10):
+def logBackend(channel_id, timestamp=0.0, backwards=True, number=10):
 	posts=[]
 
 	recent_n = db[channel_id].find(
-		({"timestamp":{"$lt": timestamp}} if timestamp !=0 else {})
+		({"timestamp":{"$lt": timestamp}} if timestamp !=0.0 else {})
 		).sort([("timestamp",-1)]).limit(number)
 
-	if timestamp == 0:
+	if timestamp == 0.0:
 		timestamp = recent_n[recent_n.count()-1]["timestamp"]
 
 	posts = list(recent_n)
@@ -213,7 +219,9 @@ def save_channel_alias(alias, channel_id):
 
 #serving aliases for channel ids
 def get_channel_alias(alias):
-	if not "aliases" in db.collection_names():
+	if alias in db.collection_names():
+		return alias
+	elif not "aliases" in db.collection_names():
 		return False
 	else:
 		x = db.aliases.find_one({"alias":alias});
