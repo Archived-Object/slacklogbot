@@ -65,7 +65,7 @@ def serveLogBackend(channel_name, timestamp="0", number="10"):
 		return json.dumps(makeSerializable(dict(
 			logBackend(channel_name,
 				float(timestamp),
-				float(number)
+				int(number)
 				)
 			)))
 	except ValueError:
