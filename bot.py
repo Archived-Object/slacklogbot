@@ -57,23 +57,22 @@ def serveLog(channel):
 		channel_name=channel,
 		content=log_json)
 
+@app.route('/log/backend/<channel_name>/<timestamp>/<number>/direction')
 @app.route('/log/backend/<channel_name>/<timestamp>/<number>')
 @app.route('/log/backend/<channel_name>/<timestamp>')
 @app.route('/log/backend/<channel_name>/')
-def serveLogBackend(channel_name, timestamp="0", number="10"):
+def serveLogBackend(channel_name, timestamp="0", number="10", direction=False):
 	ts, n = (0, 0)
 	try:
 		ts = float(timestamp)
 		n = int(number)
 	except ValueError:
 		return "!that's not a number, dummy!"
-	
-	print ts, n;
 
 	return json.dumps(makeSerializable(dict(
 		logBackend(
 				get_channel_alias(channel_name),
-				ts, n
+				ts, not bool(direction), n
 			)
 		)))
 
