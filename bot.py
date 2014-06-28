@@ -69,12 +69,15 @@ def serveLogBackend(channel_name, timestamp="0", number="10", direction=False):
 	except ValueError:
 		return "!that's not a number, dummy!"
 
-	return json.dumps(makeSerializable(dict(
-		logBackend(
+	l = logBackend(
 				get_channel_alias(channel_name),
 				ts, not bool(direction), n
 			)
-		)))
+
+
+	print l
+
+	return json.dumps(makeSerializable(dict(l)))
 
 
 def logBackend(channel_id, timestamp=0.0, backwards=True, number=10):
