@@ -35,10 +35,11 @@
   }
 
   $("#load_previous").click(function(){
-    console.log("previous");
+    $("#load_previous").disabled=true;
     $.ajax("backend/{{ channel_id }}/"+timestamp_old,
       {
         success: function(data){
+          $("#load_previous").disabled=false;
           console.log(data);
           if (data.length > 0 && data.charAt(0) != "!"){
             var newj = eval("(" + data + ")");

@@ -64,7 +64,7 @@ def serveLogBackend(channel_name, timestamp="0", number="10"):
 	try:
 		return json.dumps(makeSerializable(dict(
 			logBackend(channel_name,
-				timestamp,
+				float(timestamp),
 				float(number)
 				)
 			)))
