@@ -24,8 +24,8 @@
       margin-right:auto;
   }
 
-  button:disabled{
-    background-color:#444444
+  button[disabled=disabled], button:disabled{
+    background-color:#555555
   }
 }
 

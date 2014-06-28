@@ -15,8 +15,8 @@
     padding: 12px;
     margin-left: auto;
     margin-right: auto; }
-  #wrapper button:disabled {
-    background-color: #444444; }
+  #wrapper button[disabled=disabled], #wrapper button:disabled {
+    background-color: #555555; }
 
 #postsArea {
   font-family: Raleway; }
