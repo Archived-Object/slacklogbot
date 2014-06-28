@@ -146,6 +146,7 @@ def removenote(form, spl):
 	pass
 
 def reloadcfg(form, spl):
+	global cfg
 	filename = "./config.json" if len(spl)<=2 else spl[2]
 	d = loadcfg(filename, False)
 	if d is not None:

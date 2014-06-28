@@ -28,7 +28,7 @@
   <script>
   var timestamp_old = null;
   var timestamp_new = null;
-  var initial_json = {{ content|escapejs }};
+  var initial_json = {{ content|safe }};
 
   function ObjectId(c){
     return c
