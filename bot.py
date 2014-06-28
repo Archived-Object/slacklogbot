@@ -1,5 +1,6 @@
 import flask, pymongo, json
 from flask import request, Flask, render_template
+from bson.objectid import ObjectId
 import signal, sys, time, datetime
 
 db = None
@@ -49,8 +50,8 @@ def serveLog(channel):
 	elif not channel_id:
 		channel_id = channel
 
-	log_json = udict_to_ascii(dict(logBackend(channel_id)))
-
+	log_json = json.dumps(makeSerializable(dict(logBackend(channel_id))))
+	
 	return render_template("log.html",
 		channel_id=channel_id,
 		channel_name=channel,
@@ -219,6 +220,14 @@ def get_channel_alias(alias):
 			return (x["id"])
 		else:
 			return None
+
+def makeSerializable(jayson):
+	for i in jayson if isinstance(jayson, dict) else range(len(jayson)):
+		if isinstance(jayson[i], dict) or isinstance(jayson[i], list):
+			jayson[i] = makeSerializable(jayson[i])
+		elif isinstance(jayson[i], ObjectId):
+			jayson[i] = str(jayson[i])
+	return jayson
 
 
 def udict_to_ascii(jayson):
