@@ -82,8 +82,9 @@ def serveLogBackend(channel_name, timestamp="0", number="10", direction=False):
 def logBackend(channel_id, timestamp=0.0, backwards=True, number=10):
 	posts=[]
 
+	#needs to be str bcz im dummmm
 	recent_n = db[channel_id].find(
-		({"timestamp":{"$lt": timestamp}} if timestamp !=0.0 else {})
+		({"timestamp":{"$lt": str(timestamp)}} if timestamp !=0.0 else {})
 		).sort([("timestamp",-1)]).limit(number)
 
 	if timestamp == 0.0:
