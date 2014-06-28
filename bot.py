@@ -92,7 +92,7 @@ def logBackend(channel_id, timestamp=0.0, backwards=True, number=10):
 	posts = list(recent_n)
 	
 	if len(posts) == 0:
-		return "!no posts timestamp < %s"%(timestamp)
+		return "!no posts timestamp < %s, limit %s"%(timestamp, number)
 
 	old = min(posts, key=lambda a: a["timestamp"])
 	new = max(posts, key=lambda a: a["timestamp"])
