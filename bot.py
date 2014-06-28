@@ -67,7 +67,7 @@ def serveLogBackend(channel_name, timestamp="0", number="10"):
 				timestamp,
 				float(number)
 				)
-			))
+			)))
 	except ValueError:
 		return "!that's not a number, dummy!"
 
