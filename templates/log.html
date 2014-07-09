@@ -76,7 +76,7 @@
       for (var i = 0; i < links.length; i++) {
         link = links[i].substring(1,links[i].length-1);
         slackText = slackText.replace(links[i], "<a href =\""+link+
-          "\"">"+link+"</a>");
+          "\">"+link+"</a>");
       }
       console.log(slackText);
       return slackText
