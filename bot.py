@@ -60,7 +60,7 @@ def dumpDBFull(channel):
 
 @app.route('/deploy', methods=['POST','GET'])
 def redeploy():
-	print request.form
+	print (request.form)
 	#redeploys and relies on flask's auto-reloader to reload server
 	#fuck portability tho
 	print "attempting to reload : (%s)"%(cfg['onreload'])
