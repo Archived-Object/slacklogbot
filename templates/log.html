@@ -71,6 +71,7 @@
   }
 
   function escapeSlackText(slackText){
+    //links
     links = slackText.match(/<http:\/\/[^<]*>/g)
     if (links != null) {
       for (var i = 0; i < links.length; i++) {
@@ -79,6 +80,14 @@
           "\">"+link+"</a>");
       }
       console.log(slackText);
+    }
+    //newlines
+    newlines = slackText.match(/[^\\]\n/g)
+    if (newlines != null){
+      for (var i = 0; i < newlines.length; i++) {
+        nl = newlines[i].substring(1);
+        slackText = slackText.replace(nl,"<br>")
+      }
     }
     return slackText
   }
