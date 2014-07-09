@@ -74,7 +74,9 @@
     links = slackText.match(/<http:\/\/[^<]*>/g)
     if (links != null) {
       for (var i = 0; i < links.length; i++) {
-        slackText = slackText.replace(links[i], "[A LINK WOULD GO HERE]")
+        link = links[i].substring(1,links[i].length-3);
+        slackText = slackText.replace(links[i], "<a href ="+link+
+          ">link</a>");
       }
       return slackText
     }
