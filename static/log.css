@@ -71,13 +71,9 @@
         transition: border 0.2s;
         border-top: 1px solid rgba(0, 0, 0, 0.5); }
   .post.subcomment {
-    margin: 12px; }
-    .post.subcomment .info .bloque .timestamp {
-      display: none; }
-    .post.subcomment .bloque .username {
-      display: none; }
+    margin-top: 12px;
+    margin-bottom: 12px; }
     .post.subcomment .info {
-      display: inline-block;
-      float: left; }
+      display: none; }
     .post.subcomment img {
       display: none; }

@@ -108,23 +108,16 @@
 
   &.subcomment{
 
-    margin:12px;
-
-    .info .bloque .timestamp{
-      display:none;
-    }
-
-    .bloque .username{
-      display:none;
-    }
+    margin-top:12px;
+    margin-bottom:12px;
 
     .info{
-      display:inline-block;
-      float:left;
+      display:none;
     }
 
     img{
       display:none;
     }
+
   }
 }
