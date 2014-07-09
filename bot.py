@@ -206,7 +206,7 @@ commands = {
 }
 
 #################################
-#            parseing           #
+#            parsing            #
 #################################
 
 def parsecommand(form):
