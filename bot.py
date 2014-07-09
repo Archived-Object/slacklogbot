@@ -57,8 +57,10 @@ def dumpDBFull(channel):
 	return json.dumps(
 			[makeSerializable(dict(i)) for i in db[channel].find()]
 		) 
-@app.route('/deploy')
+
+@app.route('/deploy', methods=['POST','GET'])
 def redeploy():
+	print request.form
 	#redeploys and relies on flask's auto-reloader to reload server
 	#fuck portability tho
 	print "attempting to reload : (%s)"%(cfg['onreload'])
