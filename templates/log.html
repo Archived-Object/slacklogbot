@@ -75,7 +75,7 @@
     prevelement = null;
     for (var key in j.data) {
       var date = new Date(0);
-      date.setUTCSeconds(j.data[key].timestamp.toString()/1000);
+      date.setUTCSeconds(parseFloat(j.data[key].timestamp)/1000);
 
       newelement =           $("<section class='post'>" + 
 
@@ -92,7 +92,7 @@
 
                 "<section class='timestamp'>" +
                   "<a href='/log/{{ channel_name }}/"+ j.data[key]._id +"'>" +
-                   j.data[key].timestamp + "</a>"+
+                   date.getHours() + ":" + date.getMinutes() + "</a>"+
                 "<\/section>" +
                 "<\/section>"+
               "<\/section>" +
