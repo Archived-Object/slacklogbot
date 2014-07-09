@@ -1,4 +1,4 @@
-import flask, pymongo, json
+import flask, pymongo, json, os
 from flask import request, Flask, render_template
 from bson.objectid import ObjectId
 import signal, sys, time, datetime
@@ -20,7 +20,7 @@ app = flask.Flask(__name__)
 def onCall():
 	missing = [ i for i in cfg["required_tokens"] if i not in request.form.keys() ]
 	if ( len(missing) == 0 ):
-		print "msg recieved"
+		#print "msg recieved"
 		#because request.form.keys can't be cast to dict. FLASKU Y?
 		d = form2dict(request.form)
 		db[str(request.form["channel_id"])].insert(d)
@@ -30,13 +30,13 @@ def onCall():
 			request.form["channel_id"])
 
 		if request.form["text"].startswith("logbot"):
-			print "pushing msg to logbot"
+			#print "pushing msg to logbot"
 			return parsecommand(request.form)
 	elif len(missing)==1 and missing[0]=="text":
 		d = form2dict(request.form)
 		db[str(request.form["channel_id"])].insert(d)
 		print [str(i) for i in request.form.keys() ]
-		return rs("taking without text for RASINS")
+		return rs("taking without text for reasons")
 	else:
 		return rs("msg rejected: did not have required parameters (%s)}"%(
 			", ".join(missing)
@@ -44,11 +44,18 @@ def onCall():
 	return ""
 
 #pls don't call this shit frequently
-@app.route('/dump/<channel>')
+#@app.route('/dump/<channel>')
+#lol this crashes the server
 def dumpDBFull(channel):
 	return json.dumps(
 			[makeSerializable(dict(i)) for i in db[channel].find()]
 		) 
+@app.route('/deploy')
+def redeploy():
+	#redeploys and relies on flask's auto-reloader to reload server
+	#fuck portability tho
+	os.system(cfg['onreload'])
+	return rs("reloading: executed command %s"%(cfg['onreload']))
 
 @app.route('/log/<channel>')
 def serveLog(channel):
@@ -196,7 +203,7 @@ commands = {
 
 def parsecommand(form):
 	spl = form["text"].split(" ")
-	print spl
+	#print spl
 	if (len(spl)>1):
 		if(spl[1] == u'help'):
 				return rs(
@@ -214,7 +221,7 @@ def parsecommand(form):
 		return rs("what?")
 
 def rs(string):
-	print 
+	#print 
 	return "{\"text\": \"%s\"}"%(string)
 
 
