@@ -23,7 +23,7 @@ def onCall():
 		if(not request.form["token"] in cfg["valid_tokens"]):
 			a = "auth token rejected";
 			if (request.form["text"] != a):
-				return rs()
+				return rs(a)
 			else:
 				return ""
 		#print "msg recieved"
