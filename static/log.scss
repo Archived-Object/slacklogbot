@@ -108,6 +108,10 @@
 
   &.subcomment{
 
+    .timestamp{
+      margin-right:0;
+    }
+
     .bloque .username{
       display:none;
     }

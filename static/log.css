@@ -70,6 +70,8 @@
       .post .info .timestamp a:hover:after {
         transition: border 0.2s;
         border-top: 1px solid rgba(0, 0, 0, 0.5); }
+  .post.subcomment .timestamp {
+    margin-right: 0; }
   .post.subcomment .bloque .username {
     display: none; }
   .post.subcomment .info {
