@@ -34,9 +34,10 @@ def onCall():
 			return parsecommand(request.form)
 	elif len(missing)==1 and missing[0]=="text":
 		d = form2dict(request.form)
+		d["text"]="[ERR: no text given]"
 		db[str(request.form["channel_id"])].insert(d)
 		print [str(i) for i in request.form.keys() ]
-		return rs("taking without text for reasons")
+		#return rs("taking without text for reasons")
 	else:
 		return rs("msg rejected: did not have required parameters (%s)}"%(
 			", ".join(missing)
