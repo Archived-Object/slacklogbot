@@ -57,6 +57,7 @@ def dumpDBFull(channel):
 def redeploy():
 	#redeploys and relies on flask's auto-reloader to reload server
 	#fuck portability tho
+	print "attempting to reload : (%s)"%(cfg['onreload'])
 	os.system(cfg['onreload'])
 	return rs("reloading: executed command %s"%(cfg['onreload']))
 
