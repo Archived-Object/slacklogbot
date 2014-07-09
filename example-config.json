@@ -8,5 +8,6 @@
 	"hostname":"localhost",
 	"password_hash":"",
 	"password_salt":"thisismysaltyhash<3<3<3",
-	"onreload":"git pull"
+	"onreload":"git pull",
+	"valid_tokens":["example_token_1", "example_token_2"]
 }
