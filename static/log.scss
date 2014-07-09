@@ -102,7 +102,23 @@
         border-top:1px solid rgba(0,0,0,0.5);
       }
     }
+  }
 
 
+
+  &.subcomment{
+
+    .bloque .username{
+      display:none;
+    }
+
+    .info{
+      display:inline-block;
+      float:left;
+    }
+
+    img{
+      display:none;
+    }
   }
 }

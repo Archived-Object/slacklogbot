@@ -71,6 +71,8 @@
   }
 
   function parseJson(j, animate) {
+    prevusr = "null";
+    prevelement = null;
     for (var key in j.data) {
       var date = new Date(0);
       date.setUTCSeconds(j.data[key].timestamp.toString()/1000);
@@ -99,6 +101,12 @@
                 j.data[key].text +
               "<\/section>" +
             "<\/section");
+
+      if (j.data[key].userid == prevusr){
+        prevelement.addClass("subcomment");
+      }
+      prevelement = newelement;
+      prevusr = j.data[key].userid;
 
       if (j.data[key].timestamp < this.timestamp_new){
         if (animate) {
