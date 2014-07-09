@@ -21,7 +21,11 @@ def onCall():
 	missing = [ i for i in cfg["required_tokens"] if i not in request.form.keys() ]
 	if ( len(missing) == 0 ):
 		if(not request.form["token"] in cfg["valid_tokens"]):
-			return rs("auth token rejected")
+			a = "auth token rejected";
+			if (request.form["text"] != a):
+				return rs()
+			else:
+				return ""
 		#print "msg recieved"
 		#because request.form.keys can't be cast to dict. FLASKU Y?
 		d = form2dict(request.form)
