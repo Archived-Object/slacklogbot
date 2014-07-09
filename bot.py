@@ -21,12 +21,9 @@ def onCall():
 	if ( all([ (i in request.form.keys()) for i in cfg["required_tokens"] ]) ):
 		print "msg recieved"
 		#because request.form.keys can't be cast to dict. FLASKU Y?
-		d = dict( [(key, 
-			(int(request.form[key])
-				if request.form[key].isdigit() else
-					request.form[key]) 
-			) for key in request.form.keys()] )
+		d = form2dict(request.form)
 		db[str(request.form["channel_id"])].insert(d)
+
 		save_channel_alias(
 			request.form["channel_name"],
 			request.form["channel_id"])
@@ -34,12 +31,22 @@ def onCall():
 		if request.form["text"].startswith("logbot"):
 			print "pushing msg to logbot"
 			return parsecommand(request.form)
+	elif [ i for i in cfg["required_tokens"]] == ["text"]:
+		d = form2dict(request.form)
+		db[str(request.form["channel_id"])].insert(d)
+		return rs("taking without text for RASINS")
 	else:
-		print "msg rejected - tokens"
 		return rs("msg rejected: did not have required parameters (%s)}"%(
 			", ".join([ i for i in cfg["required_tokens"] if i not in request.form.keys() ])
 		))
 	return ""
+
+#pls don't call this shit frequently
+@app.route('/dump/<channel>')
+def dumpDBFull(channel):
+	return json.dumps(
+			[makeSerializable(dict(i)) for i in db[channel].find()]
+		) 
 
 @app.route('/log/<channel>')
 def serveLog(channel):
@@ -213,6 +220,14 @@ def rs(string):
 #################################
 #        helper methods         #
 #################################
+
+def form2dict(f):
+	return dict( [(key, 
+			(int(request.form[key])
+				if request.form[key].isdigit() else
+					request.form[key]) 
+			) for key in request.form.keys()] )
+	db[str(request.form["channel_id"])].insert(d)
 
 #saving aliases for channel ids
 def save_channel_alias(alias, channel_id):
