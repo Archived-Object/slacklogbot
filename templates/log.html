@@ -103,11 +103,12 @@
               "<\/section>" +
             "<\/section");
 
-      if (j.data[key].userid == prevusr){
+      if (j.data[key].user_id == prevusr){
         prevelement.addClass("subcomment");
       }
+
       prevelement = newelement;
-      prevusr = j.data[key].userid;
+      prevusr = j.data[key].user_id;
 
       if (j.data[key].timestamp < this.timestamp_new){
         if (animate) {
