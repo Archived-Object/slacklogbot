@@ -18,7 +18,8 @@ app = flask.Flask(__name__)
 
 @app.route('/bot', methods=['POST','GET'])
 def onCall():
-	if ( all([ (i in request.form.keys()) for i in cfg["required_tokens"] ]) ):
+	missing = [ i for i in cfg["required_tokens"] if i not in request.form.keys() ]
+	if ( len(missing) == 0 ):
 		print "msg recieved"
 		#because request.form.keys can't be cast to dict. FLASKU Y?
 		d = form2dict(request.form)
@@ -31,13 +32,14 @@ def onCall():
 		if request.form["text"].startswith("logbot"):
 			print "pushing msg to logbot"
 			return parsecommand(request.form)
-	elif [ i for i in cfg["required_tokens"]] == ["text"]:
+	elif len(missing)==1 and missing[0]=="text":
 		d = form2dict(request.form)
 		db[str(request.form["channel_id"])].insert(d)
+		print [str(i) for i in request.form.keys() ]
 		return rs("taking without text for RASINS")
 	else:
 		return rs("msg rejected: did not have required parameters (%s)}"%(
-			", ".join([ i for i in cfg["required_tokens"] if i not in request.form.keys() ])
+			", ".join(missing)
 		))
 	return ""
 
