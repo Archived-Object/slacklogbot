@@ -72,10 +72,12 @@
 
   function escapeSlackText(slackText){
     links = slackText.match(/<http:\/\/[^<]*>/g)
-    for (var i = 0; i < links.length; i++) {
-      slackText = slackText.replace(links[i], "[A LINK WOULD GO HERE]")
+    if (links != null) {
+      for (var i = 0; i < links.length; i++) {
+        slackText = slackText.replace(links[i], "[A LINK WOULD GO HERE]")
+      }
+      return slackText
     }
-    return slackText
   }
 
   function parseJson(j, animate) {
