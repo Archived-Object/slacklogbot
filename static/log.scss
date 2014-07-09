@@ -36,6 +36,7 @@
 .post{
   display:block;
   margin:24px;
+  margin-bottom:6px;
   position:relative;
 /*
   &:before{
@@ -54,6 +55,7 @@
   .info{
     font-weight: 300;
     display:block;
+    margin-bottom:6px;
 
     section, img{
       display:inline-block;
@@ -108,8 +110,8 @@
 
   &.subcomment{
 
-    margin-top:12px;
-    margin-bottom:12px;
+    margin-top:6px;
+    margin-bottom:6px;
 
     .info{
       display:none;

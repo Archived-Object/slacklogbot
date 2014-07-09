@@ -24,6 +24,7 @@
 .post {
   display: block;
   margin: 24px;
+  margin-bottom: 6px;
   position: relative;
   /*
     &:before{
@@ -38,7 +39,8 @@
     font-size: 14px; }
   .post .info {
     font-weight: 300;
-    display: block; }
+    display: block;
+    margin-bottom: 6px; }
     .post .info section, .post .info img {
       display: inline-block;
       vertical-align: middle;
@@ -71,8 +73,8 @@
         transition: border 0.2s;
         border-top: 1px solid rgba(0, 0, 0, 0.5); }
   .post.subcomment {
-    margin-top: 12px;
-    margin-bottom: 12px; }
+    margin-top: 6px;
+    margin-bottom: 6px; }
     .post.subcomment .info {
       display: none; }
     .post.subcomment img {
