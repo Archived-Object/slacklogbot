@@ -179,7 +179,7 @@
 		prevelement = null;
 		for (var key in j.data) {
 			var date = new Date(0);
-			date.setUTCSeconds(parseFloat(j.data[key].timestamp)/1000);
+			date.setUTCSeconds(parseFloat(j.data[key].timestamp));
 
 			newelement =           $("<section class='post'>" + 
 
