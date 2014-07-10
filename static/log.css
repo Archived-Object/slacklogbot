@@ -1,7 +1,41 @@
+body {
+  font-family: Raleway;
+  background-color: #fbfbfb; }
+
 * {
   box-sizing: border-box;
   padding: 0px;
   margin: 0px; }
+
+#log_end {
+  font-size: 24px;
+  font-weight: 200;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.2);
+  display: block;
+  height: 24px;
+  transition: all 0.2s;
+  display: block;
+  opacity: 1; }
+  #log_end.hidden {
+    height: 0;
+    opacity: 0; }
+
+#chanbutton {
+  content: "#";
+  display: block;
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  top: 12px;
+  left: -44px;
+  background-color: #333333;
+  color: #efefef;
+  font-size: 21px;
+  line-height: 100%;
+  text-align: center;
+  border: none;
+  transition: all 0.4s; }
 
 #chanlist {
   float: left;
@@ -10,9 +44,12 @@
   height: 100%;
   background-color: #333333;
   position: relative;
-  z-index: 2; }
+  z-index: 2;
+  left: 0;
+  overflow: hidden;
+  margin-right: 0;
+  transition: all 0.4s; }
   #chanlist h2 {
-    font-family: Raleway;
     font-weight: 200;
     font-size: 32px;
     color: #efefef;
@@ -21,7 +58,6 @@
     #chanlist h2:after {
       border-color: #efefef; }
   #chanlist .channel {
-    font-family: Raleway;
     font-weight: 300;
     display: block;
     margin: 6px;
@@ -29,12 +65,12 @@
   #chanlist .channel a {
     position: relative;
     text-decoration: none;
-    transition: color 0.2s;
+    transition: all 0.2s;
     color: rgba(239, 239, 239, 0.5); }
     #chanlist .channel a:before {
       content: "#";
       color: rgba(239, 239, 239, 0.5);
-      transition: color 0.2s; }
+      transition: all 0.2s; }
     #chanlist .channel a:hover {
       color: #efefef; }
     #chanlist .channel a:hover:before {
@@ -44,15 +80,22 @@
     #chanlist .channel.current a:before {
       color: #d95b43; }
 
+@media screen and (max-width: 700px) {
+  #chanlist:not(.shown) {
+    left: -24px;
+    width: 0;
+    margin-right: -24px; }
+
+  #chanbutton {
+    left: 12px; }
+
+  #text {
+    margin-left: 24px; } }
 #text {
-  background-color: #fbfbfb !important;
   padding: 21px;
-  position: absolute;
-  left: 210px;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  overflow-y: scroll; }
+  height: 100%;
+  overflow-y: scroll;
+  transition: all 0.4s; }
   #text button {
     background-color: #333333;
     color: #efefef;
@@ -69,7 +112,7 @@
     display: block;
     position: absolute;
     right: 12px;
-    transition: height 0.2s opacity 0.2s;
+    transition: all 0.2s;
     overflow: hidden; }
   #text .sonic.hidden {
     opacity: 0; }
@@ -78,28 +121,25 @@
   #text #loader_next {
     bottom: 0; }
 
-#postsArea {
-  font-family: Raleway; }
-
 .post {
   display: block;
   margin: 24px;
   margin-bottom: 6px;
   position: relative;
   /*
-    &:before{
-      content:"";
-      display:block;
-      height:1px;
-      width:100%;
-      background: radial-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0));
-    }
+  	&:before{
+  		content:"";
+  		display:block;
+  		height:1px;
+  		width:100%;
+  		background: radial-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0));
+  	}
   */ }
   .post .text {
     font-size: 14px; }
     .post .text a {
       color: #53777a;
-      transition: color 0.2s; }
+      transition: all 0.2s; }
     .post .text a:hover {
       color: #033649; }
   .post .info {
@@ -122,7 +162,7 @@
     .post .info .timestamp a {
       color: rgba(0, 0, 0, 0.2);
       text-decoration: none;
-      transition: color 0.2s;
+      transition: all 0.2s;
       position: relative; }
       .post .info .timestamp a:hover {
         color: rgba(0, 0, 0, 0.5); }
@@ -135,7 +175,7 @@
         left: 1px;
         right: 1px; }
       .post .info .timestamp a:hover:after {
-        transition: border 0.2s;
+        transition: all 0.2s;
         border-top: 1px solid rgba(0, 0, 0, 0.5); }
   .post.subcomment {
     margin-top: 6px;

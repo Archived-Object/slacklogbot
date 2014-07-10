@@ -1,217 +1,221 @@
 <!DOCTYPE html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta http-equiv="X-UA-Compatible" content="chrome=1">
-  <title>Logbot::{{ channel_name }}</title>
-  <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Raleway:400,300,500,600'>
-  <link rel="stylesheet" href="{{url_for('static', filename='common.css')}}">
-  <link rel="stylesheet" href="{{url_for('static', filename='log.css')}}">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<title>Logbot::{{ channel_name }}</title>
+	<link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Raleway:400,300,500,600'>
+	<link rel="stylesheet" href="{{url_for('static', filename='common.css')}}">
+	<link rel="stylesheet" href="{{url_for('static', filename='log.css')}}">
 
 </head>
 <body>
-  <section id="chanlist">
-  <h2>CHANNELS</h2>
-    <ul>
-      {% for channel in channel_list %}
-        <li class="channel {% if channel.id==channel_id %}current{% endif %}" data-id="{{ channel.id }}">
-          <a href="/log/{{ channel.name }}">{{ channel.name }}</a>
-        </li>
-      {% endfor %}
-    </ul>
-  </section>
-  <section id="text">
-    <section id = "postsArea">
-      
-    </section>
-  </section>
+	<section id="chanlist">
+	<h2>CHANNELS</h2>
+	<ul>
+		{% for channel in channel_list %}
+			<li class="channel {% if channel.id==channel_id %}current{% endif %}" data-id="{{ channel.id }}">
+				<a href="/log/{{ channel.name }}">{{ channel.name }}</a>
+			</li>
+		{% endfor %}
+	</ul>
+	</section>
+	<section id="text">
+		<section id="log_end" class="hidden">End of Log for this channel</section>
+		<section id = "postsArea">
+			
+		</section>
+	</section>
+	<button id="chanbutton">#</button>
 
-  <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
-  <script src="{{url_for('static', filename='jquery.timeago.js')}}"></script>
-  <script src="{{url_for('static', filename='prettydate.js')}}"></script>
-  <script src="{{url_for('static', filename='sonic.js')}}"></script>
+	<script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+	<script src="{{url_for('static', filename='jquery.timeago.js')}}"></script>
+	<script src="{{url_for('static', filename='prettydate.js')}}"></script>
+	<script src="{{url_for('static', filename='sonic.js')}}"></script>
 
-  <script>
-  sonicfg = {
-    width: 100,
-    height: 50,
+	<script>
+	sonicfg = {
+		width: 100,
+		height: 50,
 
-    stepsPerFrame: 1,
-    trailLength: 0,
-    pointDistance: .1,
-    fps: 20,
-    padding: 10,
-    //step: 'fader',
+		stepsPerFrame: 1,
+		trailLength: 0,
+		pointDistance: .1,
+		fps: 20,
+		padding: 10,
+		//step: 'fader',
 
-    fillColor: 'rgba(0,0,0,0.3)',
+		fillColor: 'rgba(0,0,0,0.3)',
 
-    setup: function() {
-      this._.lineWidth = 1;
-    },
+		setup: function() {
+			this._.lineWidth = 1;
+		},
 
-    path: [
-      ['line', 0, 20, 100, 20],
-      ['line', 0, 20, 100, 20]
-    ]
-  };
+		path: [
+			['line', 0, 20, 100, 20],
+			['line', 0, 20, 100, 20]
+		]
+	};
 
-  loader_prev = new Sonic(sonicfg);
-  $(loader_prev.canvas).prependTo($("#text")).attr('id',"loader_prev").addClass("hidden")
-  loader_prev.play();
-  
-  loader_next = new Sonic(sonicfg);
-  loader_next.canvas
-  $(loader_next.canvas).appendTo($("#text")).attr('id',"loader_next").addClass("hidden")
-  loader_next.play();
-  
-  </script>
-  <script>
-  var timestamp_old = null;
-  var timestamp_new = null;
-  var initial_json = {{ content|safe }};
-  var ajaxing = false;
+	loader_prev = new Sonic(sonicfg);
+	$(loader_prev.canvas).prependTo($("#text")).attr('id',"loader_prev").addClass("hidden")
+	loader_prev.play();
+	
+	loader_next = new Sonic(sonicfg);
+	loader_next.canvas
+	$(loader_next.canvas).appendTo($("#text")).attr('id',"loader_next").addClass("hidden")
+	loader_next.play();
+	
+	</script>
+	<script>
+	var timestamp_old = null;
+	var timestamp_new = null;
+	var log_end = false;
+	var initial_json = {{ content|safe }};
+	var ajaxing = false;
 
-  function ObjectId(c){
-    return c
-  }
+	function ObjectId(c){
+		return c
+	}
 
-  $("#text").scroll(function() {
-    if($(this).scrollTop() == 0 && !ajaxing) {
-      loadPrev();
-    }
-  });
+	$("#text").scroll(function() {
+		if($(this).scrollTop() == 0 && !ajaxing && !log_end) {
+			loadPrev();
+		}
+	});
 
-  initialLoad();
-  function initialLoad(){
-    
-    if( $("#postsArea").height()< $("#text").height() ){
-      loadPrev(initialLoad);
-    } else{
-      $("#text").scrollTop( $("#postsArea").height())
-    }
-  }
+	initialLoad();
+	function initialLoad(){
+		
+		if( $("#postsArea").height()< $("#text").height() ){
+			loadPrev(initialLoad);
+		} else{
+			$("#text").scrollTop( $("#postsArea").height())
+		}
+	}
 
-  function loadPrev(callback){
-    callback = typeof callback !== 'undefined' ? callback : function(){};
-    ajaxing = true;
-    $("#loader_prev").removeClass("hidden");
-    setTimeout(function(){
-      $("#loader_prev").addClass("hidden");
-      $.ajax("backend/{{ channel_id }}/"+timestamp_old,
-      {
-        success: function(data){
-          ajaxing=false;
-          //console.log(data);
-          if (data.length > 0 && data.charAt(0) != "!"){
-            var newj = eval("(" + data + ")");
-            timestamp_old = newj.oldest.timestamp;
-            oldroot = $("#postsArea").children()[0];
-            parseJson( newj , true);
-                      
-            $("#text").scrollTop( 
-              $(oldroot).offset().top - 
-             parseInt(($(oldroot).css("margin-top").replace('px', ''))) - 
-             parseInt(($("#text").css("padding-top").replace('px', '')))
-            );
-          } else{
-            //TODO flash error
-          }
-          callback()
-        },
-        error: function(jqXHR, textStatus, errorThrow){
-          console.log(textStatus);
-          console.log(errorThrow);
-        }
-      });
-    }, 500);
-  }
+	function loadPrev(callback){
+		callback = typeof callback !== 'undefined' ? callback : function(){};
+		ajaxing = true;
+		$("#loader_prev").removeClass("hidden");
+		setTimeout(function(){
+			$("#loader_prev").addClass("hidden");
+			$.ajax("backend/{{ channel_id }}/"+timestamp_old,
+			{
+				success: function(data){
+					ajaxing=false;
+					//console.log(data);
+					if (data.length > 0 && data.charAt(0) != "!"){
+						var newj = eval("(" + data + ")");
+						timestamp_old = newj.oldest.timestamp;
+						oldroot = $("#postsArea").children()[0];
+						parseJson( newj , true);
+											
+						$("#text").scrollTop( 
+							$(oldroot).offset().top - 
+						 parseInt(($(oldroot).css("margin-top").replace('px', ''))) - 
+						 parseInt(($("#text").css("padding-top").replace('px', '')))
+						);
+					} else{
+						$("#log_end").removeClass("hidden");
+						log_end = true;
+					}
+					callback()
+				},
+				error: function(jqXHR, textStatus, errorThrow){
+					console.log(textStatus);
+					console.log(errorThrow);
+				}
+			});
+		}, 500);
+	}
 
-  $(document).ready(function(){
-    timestamp_old = initial_json.oldest.timestamp;
-    timestamp_new = initial_json.newest.timestamp;
-    parseJson(initial_json, false)
-  });
+	$(document).ready(function(){
+		timestamp_old = initial_json.oldest.timestamp;
+		timestamp_new = initial_json.newest.timestamp;
+		parseJson(initial_json, false)
+	});
 
-  function loadNext(){
-    ajaxing=true;
-    $("#loader_prev").removeClass("hidden");
-      $.ajax("/log/backend/"+most_recent+"/");
-  }
+	function loadNext(){
+		ajaxing=true;
+		$("#loader_prev").removeClass("hidden");
+			$.ajax("/log/backend/"+most_recent+"/");
+	}
 
-  function escapeSlackText(slackText){
-    //links
-    links = slackText.match(/<http:\/\/[^<]*>/g)
-    if (links != null) {
-      for (var i = 0; i < links.length; i++) {
-        link = links[i].substring(1,links[i].length-1);
-        slackText = slackText.replace(links[i], "<a href =\""+link+
-          "\">"+link+"</a>");
-      }
-      //console.log(slackText);
-    }
-    //newlines
-    newlines = slackText.match(/[^\\]\n/g)
-    if (newlines != null){
-      for (var i = 0; i < newlines.length; i++) {
-        nl = newlines[i].substring(1);
-        slackText = slackText.replace(nl,"<br>")
-      }
-    }
-    return slackText
-  }
+	function escapeSlackText(slackText){
+		//links
+		links = slackText.match(/<http:\/\/[^<]*>/g)
+		if (links != null) {
+			for (var i = 0; i < links.length; i++) {
+				link = links[i].substring(1,links[i].length-1);
+				slackText = slackText.replace(links[i], "<a href =\""+link+
+					"\">"+link+"</a>");
+			}
+			//console.log(slackText);
+		}
+		//newlines
+		newlines = slackText.match(/[^\\]\n/g)
+		if (newlines != null){
+			for (var i = 0; i < newlines.length; i++) {
+				nl = newlines[i].substring(1);
+				slackText = slackText.replace(nl,"<br>")
+			}
+		}
+		return slackText
+	}
 
-  function parseJson(j, animate) {
-    prevusr = "null";
-    prevelement = null;
-    for (var key in j.data) {
-      var date = new Date(0);
-      date.setUTCSeconds(parseFloat(j.data[key].timestamp)/1000);
+	function parseJson(j, animate) {
+		prevusr = "null";
+		prevelement = null;
+		for (var key in j.data) {
+			var date = new Date(0);
+			date.setUTCSeconds(parseFloat(j.data[key].timestamp)/1000);
 
-      newelement =           $("<section class='post'>" + 
+			newelement =           $("<section class='post'>" + 
 
-              "<section class='info'>" + 
-                "<section class='userid'>" +
-                  j.data[key].user_id +
-                "<\/section>" +
+							"<section class='info'>" + 
+								"<section class='userid'>" +
+									j.data[key].user_id +
+								"<\/section>" +
 
-                "<img src='http://placehold.it/42x42' alt='icon'>" + 
-                "<section class='bloque'>" +
-                "<section class='username'>" +
-                  j.data[key].user_name +
-                "<\/section>" +
+								"<img src='http://placehold.it/42x42' alt='icon'>" + 
+								"<section class='bloque'>" +
+								"<section class='username'>" +
+									j.data[key].user_name +
+								"<\/section>" +
 
-                "<section class='timestamp'>" +
-                  "<a href='/log/{{ channel_name }}/"+ j.data[key]._id +"'>" +
-                   date.toLocaleString() + "</a>"+
-                "<\/section>" +
-                "<\/section>"+
-              "<\/section>" +
-              
-              "<section class='text'>" +
-                escapeSlackText(j.data[key].text) +
-              "<\/section>" +
-            "<\/section");
+								"<section class='timestamp'>" +
+									"<a href='/log/{{ channel_name }}/"+ j.data[key]._id +"'>" +
+									 date.toLocaleString() + "</a>"+
+								"<\/section>" +
+								"<\/section>"+
+							"<\/section>" +
+							
+							"<section class='text'>" +
+								escapeSlackText(j.data[key].text) +
+							"<\/section>" +
+						"<\/section");
 
-      if (j.data[key].user_id == prevusr){
-        prevelement.addClass("subcomment");
-      }
+			if (j.data[key].user_id == prevusr){
+				prevelement.addClass("subcomment");
+			}
 
-      prevelement = newelement;
-      prevusr = j.data[key].user_id;
+			prevelement = newelement;
+			prevusr = j.data[key].user_id;
 
-      if (j.data[key].timestamp < this.timestamp_new){
-        newelement.prependTo($("#postsArea"));
-      } else{        
-        if (animate) {
-            newelement.appendTo($("#postsArea")).slideUp(1).slideDown(400);
-        } else{
-          newelement.appendTo($("#postsArea"));
-        }
-      }
-    }
-  }
+			if (j.data[key].timestamp < this.timestamp_new){
+				newelement.prependTo($("#postsArea"));
+			} else{        
+				if (animate) {
+						newelement.appendTo($("#postsArea")).slideUp(1).slideDown(400);
+				} else{
+					newelement.appendTo($("#postsArea"));
+				}
+			}
+		}
+	}
 
 
-  </script>
+	</script>
 </body>
 </html>

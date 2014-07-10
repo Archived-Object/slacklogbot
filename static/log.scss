@@ -11,223 +11,293 @@ $linkcolor_text_hover: #033649;
 
 $sidebarsize: 210px;
 
+@mixin transitions{
+	transition: all $transtime;
+}
+
+@mixin transitions_long{
+	transition: all 0.4s;
+}
+
+body{
+	font-family:Raleway;
+	background-color: $greyback;
+}
+
 *{
-  box-sizing:border-box;
-  padding:0px;
-  margin:0px;
+	box-sizing:border-box;
+	padding:0px;
+	margin:0px;
+}
+
+#log_end{
+	font-size:24px;
+	
+	font-weight: 200;
+	text-align: center;
+	color:rgba(0,0,0,0.2);
+	display:block;
+	height:24px;
+
+	@include transitions;
+
+	display:block;
+	opacity:1;
+
+	&.hidden{
+		height:0;
+		opacity:0;
+	}
+}
+
+#chanbutton{
+		content:"#";
+		display:block;
+		width:32px;
+		height:32px;
+		position:absolute;
+		top:12px;
+		left:-44px;
+
+		background-color:$darkback;
+		color:$lightfont;
+		
+		font-size:21px;
+		line-height:100%;
+		text-align:center;
+		border:none;
+
+		@include transitions_long;
 }
 
 #chanlist{
-  float: left;
-  width: $sidebarsize;
-  padding: 12px;
+	float: left;
+	width: $sidebarsize;
+	padding: 12px;
 
-  height: 100%;
+	height: 100%;
 
-  background-color:$darkback;
+	background-color:$darkback;
 
-  position: relative;
-  z-index: 2;
+	position: relative;
+	z-index: 2;
+	left:0;
+	overflow:hidden;
+	margin-right:0;
 
-  h2{
-    font-family: Raleway;
-    font-weight:200;
-    font-size:32px;
-    color: $lightfont;
-    margin:6px;
-    text-align:center;
+	@include transitions_long;
 
-    &:after{
-      border-color: $lightfont;
-    }
-  }
+	h2{
+		
+		font-weight:200;
+		font-size:32px;
+		color: $lightfont;
+		margin:6px;
+		text-align:center;
 
-  .channel{
-    font-family: Raleway;
-    font-weight:300;
-    display:block;
-    margin:6px;
-    font-size:21px;
-  }
+		&:after{
+			border-color: $lightfont;
+		}
+	}
 
-  .channel a{
-    position:relative;
-    text-decoration: none;
-    transition: color $transtime;
-    color: rgba($lightfont, 0.5);
+	.channel{
+		
+		font-weight:300;
+		display:block;
+		margin:6px;
+		font-size:21px;
+	}
 
-    &:before{
-      content:"#";
-      color: rgba($lightfont, 0.5);
-      transition: color $transtime;
-    }
-    &:hover{
-      color: $lightfont;
-    }
-    &:hover:before{
-      color: $lightfont;
-    }
-  }
+	.channel a{
+		position:relative;
+		text-decoration: none;
+		@include transitions;
+		color: rgba($lightfont, 0.5);
 
-  .channel.current a{
-    color:$lightfont;
-    &:before{
-      color:$linkcolor_bar;
-      
-    }
-  }
+		&:before{
+			content:"#";
+			color: rgba($lightfont, 0.5);
+			@include transitions;
+		}
+		&:hover{
+			color: $lightfont;
+		}
+		&:hover:before{
+			color: $lightfont;
+		}
+	}
 
+	.channel.current a{
+		color:$lightfont;
+		&:before{
+			color:$linkcolor_bar;
+			
+		}
+	}
 }
 
+@media screen and (max-width:700px) {
+	#chanlist:not(.shown){
+		left:-24px;
+		width:0;
+		margin-right:-24px;
+	}
+
+	#chanbutton{
+		left:12px;
+	}
+
+	#text{
+		margin-left: 24px;
+	}
+}
+
+
 #text{
+	padding:21px;
 
-  background-color:$greyback !important;
-  padding:21px;
-  position:absolute;
-  left: $sidebarsize;
-  top:0;
-  bottom:0;
-  right:0;
+	height:100%;
+	overflow-y:scroll;
 
-  overflow-y:scroll;
+	@include transitions_long;
 
-  button{
-      background-color:$darkback;
-      color: $lightfont;
-      border:1px solid $lightfont;
-      border-radius:3px;
+	button{
+			background-color:$darkback;
+			color: $lightfont;
+			border:1px solid $lightfont;
+			border-radius:3px;
 
-      display:block;
-      height:42px;
-      padding:12px;
+			display:block;
+			height:42px;
+			padding:12px;
 
-      margin-left:auto;
-      margin-right:auto;
-  }
+			margin-left:auto;
+			margin-right:auto;
+	}
 
-  button[disabled=disabled], button:disabled{
-    background-color:#555555
-  }
+	button[disabled=disabled], button:disabled{
+		background-color:#555555
+	}
 
-  .sonic{
-    display:block;
-    position:absolute;
-    right:12px;
+	.sonic{
+		display:block;
+		position:absolute;
+		right:12px;
 
-    transition: height $transtime opacity $transtime;
-    overflow:hidden;
-  }
+		@include transitions;
+		overflow:hidden;
+	}
 
-  .sonic.hidden{
-    opacity:0;
-  }
+	.sonic.hidden{
+		opacity:0;
+	}
 
-  #loader_prev{
-    top:0;
-  }
+	#loader_prev{
+		top:0;
+	}
 
-  #loader_next{
-    bottom:0;
-  }
+	#loader_next{
+		bottom:0;
+	}
 }
 
 #postsArea{
-  font-family: Raleway;
-    
+	
+		
 }
 
 .post{
-  display:block;
-  margin:24px;
-  margin-bottom:6px;
-  position:relative;
+	display:block;
+	margin:24px;
+	margin-bottom:6px;
+	position:relative;
 /*
-  &:before{
-    content:"";
-    display:block;
-    height:1px;
-    width:100%;
-    background: radial-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0));
-  }
+	&:before{
+		content:"";
+		display:block;
+		height:1px;
+		width:100%;
+		background: radial-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0));
+	}
 */
-  
-  .text{
-    font-size: 14px;
-    a{
-      color: $linkcolor_text;
-      transition: color $transtime;
-    } a:hover{
-      color: $linkcolor_text_hover;
-    }
-  }
+	
+	.text{
+		font-size: 14px;
+		a{
+			color: $linkcolor_text;
+			@include transitions;
+		} a:hover{
+			color: $linkcolor_text_hover;
+		}
+	}
 
-  .info{
-    font-weight: 300;
-    display:block;
-    margin-bottom:6px;
+	.info{
+		font-weight: 300;
+		display:block;
+		margin-bottom:6px;
 
-    section, img{
-      display:inline-block;
-      vertical-align:middle;
-      margin-right:12px;
-    }
+		section, img{
+			display:inline-block;
+			vertical-align:middle;
+			margin-right:12px;
+		}
 
-    .userid{
-      display:none;
-    }
+		.userid{
+			display:none;
+		}
 
-    img{
-      width:42px;
-      height:42px;
-      border-radius:3px;
-    }
+		img{
+			width:42px;
+			height:42px;
+			border-radius:3px;
+		}
 
-    .bloque section{
-      display:block;
-      height:50%;
-    }
+		.bloque section{
+			display:block;
+			height:50%;
+		}
 
-    .timestamp a{
-      color:rgba(0,0,0,0.2);
-      text-decoration:none;
-      transition:color 0.2s;
-      position:relative;
+		.timestamp a{
+			color:rgba(0,0,0,0.2);
+			text-decoration:none;
+			@include transitions;
+			position:relative;
 
-      &:hover{
-        color:rgba(0,0,0,0.5);
-      }
+			&:hover{
+				color:rgba(0,0,0,0.5);
+			}
 
-      &:after{
-        content:"";
-        display:block;
-        border-radius:2px;
-        border-top:1px solid rgba(0,0,0,0);
+			&:after{
+				content:"";
+				display:block;
+				border-radius:2px;
+				border-top:1px solid rgba(0,0,0,0);
 
-        position:absolute;
-        left:1px;
-        right:1px;
-      }
+				position:absolute;
+				left:1px;
+				right:1px;
+			}
 
-      &:hover:after{
-        transition:border 0.2s;
-        border-top:1px solid rgba(0,0,0,0.5);
-      }
-    }
-  }
+			&:hover:after{
+				@include transitions;
+				border-top:1px solid rgba(0,0,0,0.5);
+			}
+		}
+	}
 
 
 
-  &.subcomment{
+	&.subcomment{
 
-    margin-top:6px;
-    margin-bottom:6px;
+		margin-top:6px;
+		margin-bottom:6px;
 
-    .info{
-      display:none;
-    }
+		.info{
+			display:none;
+		}
 
-    img{
-      display:none;
-    }
-  }
+		img{
+			display:none;
+		}
+	}
 }
