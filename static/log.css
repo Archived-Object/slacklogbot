@@ -3,7 +3,8 @@ body {
   background-color: #fbfbfb; }
 
 * {
-  box-sizing: border-box;
+  -moz-box-sizing: border-box !important;
+  box-sizing: border-box !important;
   padding: 0px;
   margin: 0px; }
 
@@ -85,7 +86,7 @@ body {
     left: -44px; }
 
   #text {
-    left: 24px !important; }
+    left: 12px !important; }
 
   body.hidechanlist #chanlist {
     left: -24px;
@@ -156,7 +157,8 @@ body {
     margin-bottom: 6px; }
     .post .info section, .post .info img {
       display: inline-block;
-      vertical-align: middle;
+      vertical-align: middle; }
+    .post .info img {
       margin-right: 12px; }
     .post .info .userid {
       display: none; }
