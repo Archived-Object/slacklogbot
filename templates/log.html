@@ -87,9 +87,11 @@
 
 	initialLoad();
 	function initialLoad(){
-		$("#text").scrollTop( $("#postsArea").height() )
 		if( $("#postsArea").height()< $("#text").height() && !log_end){
 			loadPrev(initialLoad);
+			$("#text").scrollTop( $("#postsArea").height() )
+		}else{
+			$("#text").scrollTop( $("#postsArea").height() )
 		}
 	}
 
