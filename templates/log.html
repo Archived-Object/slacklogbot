@@ -81,7 +81,6 @@
 	$("#text").scroll(function() {
 		if($(this).scrollTop() == 0 && !ajaxing && !log_end) {
 			loadPrev();
-			console.log("LOADPREV");
 		}
 	});
 
@@ -144,14 +143,23 @@
 			$.ajax("/log/backend/"+most_recent+"/");
 	}
 
+	function limLength(str, lim){
+		if (str.length > lim) {
+			return str.substring(0, lim-3)+"...";
+		} else{
+			return str;
+		}
+	}
+
 	function escapeSlackText(slackText){
 		//links
+		//hides long links
 		links = slackText.match(/<http:\/\/[^<]*>/g)
 		if (links != null) {
 			for (var i = 0; i < links.length; i++) {
 				link = links[i].substring(1,links[i].length-1);
 				slackText = slackText.replace(links[i], "<a href =\""+link+
-					"\">"+link+"</a>");
+					"\">"+limLength(link, 40)+"</a>");
 			}
 			//console.log(slackText);
 		}
