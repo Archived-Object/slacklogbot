@@ -87,6 +87,8 @@ $sidebarsize: 210px;
   bottom:0;
   right:0;
 
+  overflow:scroll;
+
   button{
       background-color:$darkback;
       color: $lightfont;
