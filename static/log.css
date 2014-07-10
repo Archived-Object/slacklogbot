@@ -45,14 +45,14 @@
       color: #d95b43; }
 
 #text {
-  background-color: #FBFBFB !important;
+  background-color: #fbfbfb !important;
   padding: 21px;
   position: absolute;
   left: 210px;
   top: 0;
   bottom: 0;
   right: 0;
-  overflow: scroll; }
+  overflow-y: scroll; }
   #text button {
     background-color: #333333;
     color: #efefef;
@@ -65,6 +65,18 @@
     margin-right: auto; }
   #text button[disabled=disabled], #text button:disabled {
     background-color: #555555; }
+  #text .sonic {
+    display: block;
+    position: absolute;
+    right: 12px;
+    transition: height 0.2s opacity 0.2s;
+    overflow: hidden; }
+  #text .sonic.hidden {
+    opacity: 0; }
+  #text #loader_prev {
+    top: 0; }
+  #text #loader_next {
+    bottom: 0; }
 
 #postsArea {
   font-family: Raleway; }

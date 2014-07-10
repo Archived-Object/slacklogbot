@@ -21,54 +21,110 @@
     </ul>
   </section>
   <section id="text">
-    <button id = "load_previous">Previous</button>
-
     <section id = "postsArea">
       
     </section>
-
-    <button id = "load_next">Next</button>
   </section>
 
   <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
   <script src="{{url_for('static', filename='jquery.timeago.js')}}"></script>
   <script src="{{url_for('static', filename='prettydate.js')}}"></script>
+  <script src="{{url_for('static', filename='sonic.js')}}"></script>
 
-  <!-- TODO AJAX-SAMA -->
+  <script>
+  sonicfg = {
+    width: 100,
+    height: 50,
+
+    stepsPerFrame: 1,
+    trailLength: 0,
+    pointDistance: .1,
+    fps: 20,
+    padding: 10,
+    //step: 'fader',
+
+    fillColor: 'rgba(0,0,0,0.3)',
+
+    setup: function() {
+      this._.lineWidth = 1;
+    },
+
+    path: [
+      ['line', 0, 20, 100, 20],
+      ['line', 0, 20, 100, 20]
+    ]
+  };
+
+  loader_prev = new Sonic(sonicfg);
+  $(loader_prev.canvas).prependTo($("#text")).attr('id',"loader_prev").addClass("hidden")
+  loader_prev.play();
+  
+  loader_next = new Sonic(sonicfg);
+  loader_next.canvas
+  $(loader_next.canvas).appendTo($("#text")).attr('id',"loader_next").addClass("hidden")
+  loader_next.play();
+  
+  </script>
   <script>
   var timestamp_old = null;
   var timestamp_new = null;
   var initial_json = {{ content|safe }};
+  var ajaxing = false;
 
   function ObjectId(c){
     return c
   }
 
-  $("#load_previous").click(function(){
-    $("#load_previous").disabled=true;
-    $.ajax("backend/{{ channel_id }}/"+timestamp_old,
+  $("#text").scroll(function() {
+    if($(this).scrollTop() == 0 && !ajaxing) {
+      loadPrev();
+    }
+  });
+
+  initialLoad();
+  function initialLoad(){
+    
+    if( $("#postsArea").height()< $("#text").height() ){
+      loadPrev(initialLoad);
+    } else{
+      $("#text").scrollTop( $("#postsArea").height())
+    }
+  }
+
+  function loadPrev(callback){
+    callback = typeof callback !== 'undefined' ? callback : function(){};
+    ajaxing = true;
+    $("#loader_prev").removeClass("hidden");
+    setTimeout(function(){
+      $("#loader_prev").addClass("hidden");
+      $.ajax("backend/{{ channel_id }}/"+timestamp_old,
       {
         success: function(data){
-          $("#load_previous").disabled=false;
-          console.log(data);
+          ajaxing=false;
+          //console.log(data);
           if (data.length > 0 && data.charAt(0) != "!"){
             var newj = eval("(" + data + ")");
             timestamp_old = newj.oldest.timestamp;
+            oldroot = $("#postsArea").children()[0];
             parseJson( newj , true);
+                      
+            $("#text").scrollTop( 
+              $(oldroot).offset().top - 
+             parseInt(($(oldroot).css("margin-top").replace('px', ''))) - 
+             parseInt(($("#text").css("padding-top").replace('px', '')))
+            );
           } else{
             //TODO flash error
           }
+          callback()
         },
         error: function(jqXHR, textStatus, errorThrow){
           console.log(textStatus);
           console.log(errorThrow);
         }
       });
-  })
-
-  $("#load_next").click(function(){
-    console.log("next")
-  })
+    }, 500);
+  }
 
   $(document).ready(function(){
     timestamp_old = initial_json.oldest.timestamp;
@@ -77,6 +133,8 @@
   });
 
   function loadNext(){
+    ajaxing=true;
+    $("#loader_prev").removeClass("hidden");
       $.ajax("/log/backend/"+most_recent+"/");
   }
 
@@ -89,7 +147,7 @@
         slackText = slackText.replace(links[i], "<a href =\""+link+
           "\">"+link+"</a>");
       }
-      console.log(slackText);
+      //console.log(slackText);
     }
     //newlines
     newlines = slackText.match(/[^\\]\n/g)
@@ -142,17 +200,13 @@
       prevusr = j.data[key].user_id;
 
       if (j.data[key].timestamp < this.timestamp_new){
-        if (animate) {
-            newelement.prependTo($("#postsArea")).slideUp(1).slideDown(400);
-          } else{
-            newelement.prependTo($("#postsArea"));
-          }
+        newelement.prependTo($("#postsArea"));
       } else{        
         if (animate) {
             newelement.appendTo($("#postsArea")).slideUp(1).slideDown(400);
-          } else{
-            newelement.appendTo($("#postsArea"));
-          }
+        } else{
+          newelement.appendTo($("#postsArea"));
+        }
       }
     }
   }

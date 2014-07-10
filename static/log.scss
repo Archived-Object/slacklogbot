@@ -3,6 +3,8 @@ $transtime: 0.2s;
 $darkback: #333333;
 $lightfont: #EFEFEF;
 
+$greyback: #FBFBFB;
+
 $linkcolor_bar: #D95B43;
 $linkcolor_text: #53777A;
 $linkcolor_text_hover: #033649;
@@ -79,7 +81,7 @@ $sidebarsize: 210px;
 
 #text{
 
-  background-color:#FBFBFB !important;
+  background-color:$greyback !important;
   padding:21px;
   position:absolute;
   left: $sidebarsize;
@@ -87,7 +89,7 @@ $sidebarsize: 210px;
   bottom:0;
   right:0;
 
-  overflow:scroll;
+  overflow-y:scroll;
 
   button{
       background-color:$darkback;
@@ -106,10 +108,32 @@ $sidebarsize: 210px;
   button[disabled=disabled], button:disabled{
     background-color:#555555
   }
+
+  .sonic{
+    display:block;
+    position:absolute;
+    right:12px;
+
+    transition: height $transtime opacity $transtime;
+    overflow:hidden;
+  }
+
+  .sonic.hidden{
+    opacity:0;
+  }
+
+  #loader_prev{
+    top:0;
+  }
+
+  #loader_next{
+    bottom:0;
+  }
 }
 
 #postsArea{
   font-family: Raleway;
+    
 }
 
 .post{
@@ -205,6 +229,5 @@ $sidebarsize: 210px;
     img{
       display:none;
     }
-
   }
 }
