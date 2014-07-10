@@ -137,26 +137,36 @@ body{
 }
 
 @media screen and (max-width:700px) {
-	#chanlist:not(.shown){
-		left:-24px;
-		width:0;
-		margin-right:-24px;
-	}
-
 	#chanbutton{
-		left:12px;
+		left:$sidebarsize + 12px;
 	}
 
 	#text{
-		margin-left: 24px;
+		left:24px !important;
+	}
+
+	body.chanlist{
+		#chanlist{
+			left:-24px;
+			width:0;
+			margin-right:-24px;
+		}
+
+		#chanbutton{
+			left:12px;
+		}
 	}
 }
 
 
 #text{
 	padding:21px;
+	position:absolute;
+	top:0;
+	right:0;
+	bottom:0;
+	left:$sidebarsize;
 
-	height:100%;
 	overflow-y:scroll;
 
 	@include transitions_long;

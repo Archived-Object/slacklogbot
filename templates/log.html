@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="{{url_for('static', filename='log.css')}}">
 
 </head>
-<body>
+<body class="chanlist">
 	<section id="chanlist">
 	<h2>CHANNELS</h2>
 	<ul>
@@ -215,6 +215,10 @@
 		}
 	}
 
+
+	$("#chanbutton").click(function(){
+		$("body").toggleClass("chanlist")
+	});
 
 	</script>
 </body>

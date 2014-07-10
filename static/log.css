@@ -81,19 +81,25 @@ body {
       color: #d95b43; }
 
 @media screen and (max-width: 700px) {
-  #chanlist:not(.shown) {
+  #chanbutton {
+    left: 222px; }
+
+  #text {
+    left: 24px !important; }
+
+  body.chanlist #chanlist {
     left: -24px;
     width: 0;
     margin-right: -24px; }
-
-  #chanbutton {
-    left: 12px; }
-
-  #text {
-    margin-left: 24px; } }
+  body.chanlist #chanbutton {
+    left: 12px; } }
 #text {
   padding: 21px;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 210px;
   overflow-y: scroll;
   transition: all 0.4s; }
   #text button {
