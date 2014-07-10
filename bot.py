@@ -106,7 +106,7 @@ def serveLogBackend(channel_name, timestamp="0", number="20", direction=False):
 		return json.dumps(makeSerializable(dict(d)))
 
 
-def logBackend(channel_id, timestamp=0.0, backwards=True, number=10):
+def logBackend(channel_id, timestamp=0.0, backwards=True, number=20):
 	posts=[]
 
 	#needs to be str bcz im dummmm
