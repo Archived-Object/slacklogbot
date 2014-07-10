@@ -88,8 +88,10 @@
 	initialLoad();
 	function initialLoad(){
 		
-		if( $("#postsArea").height()< $("#text").height() && !log_end){
-			console.log("log_end: "+log_end);
+		if( $("#postsArea").height()< $("#text").height()){
+			if(!log_end){
+				console.log("log_end: "+log_end);
+			}
 		} else{
 			$("#text").scrollTop( $("#postsArea").height())
 		}
