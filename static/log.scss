@@ -269,20 +269,20 @@ body{
 		}
 
 		.timestamp a{
-			color:rgba(0,0,0,0.2);
+			color:rgba(0, 0, 0, 0.2);
 			text-decoration:none;
 			@include transitions;
 			position:relative;
 
 			&:hover{
-				color:rgba(0,0,0,0.5);
+				color:rgba(0, 0, 0, 0.5);
 			}
 
 			&:after{
 				content:"";
 				display:block;
 				border-radius:2px;
-				border-top:1px solid rgba(0,0,0,0);
+				border-top:1px solid rgba(0, 0, 0, 0);
 
 				position:absolute;
 				left:1px;
@@ -291,7 +291,7 @@ body{
 
 			&:hover:after{
 				@include transitions;
-				border-top:1px solid rgba(0,0,0,0.5);
+				border-top:1px solid rgba(0, 0, 0, 0.5);
 			}
 		}
 	}

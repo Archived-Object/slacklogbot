@@ -151,6 +151,16 @@
 		}
 	}
 
+	function readableDate(date){
+		tsh = ((date.getHours() < 10) ? "0"+date.getHours() : date.getHours()%13);
+		tsm = ((date.getMinutes() < 10) ? "0"+date.getMinutes() : date.getMinutes());
+
+		ampm = ((date.getHours() <= 12) ? "AM" : "PM");
+
+		return date.getFullYear()+"/"+date.getMonth()+"/"+date.getDate()+" | "+
+		tsh+":"+tsm+" | "+ampm;
+	}
+
 	function escapeSlackText(slackText){
 		//links
 		//hides long links
@@ -196,7 +206,7 @@
 
 								"<section class='timestamp'>" +
 									"<a href='/log/{{ channel_name }}/"+ j.data[key]._id +"'>" +
-									 date.toLocaleString() + "</a>"+
+									 readableDate(date) + "</a>"+
 								"<\/section>" +
 								"<\/section>"+
 							"<\/section>" +
