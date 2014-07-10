@@ -81,14 +81,15 @@
 	$("#text").scroll(function() {
 		if($(this).scrollTop() == 0 && !ajaxing && !log_end) {
 			loadPrev();
+			console.log("LOADPREV");
 		}
 	});
 
 	initialLoad();
 	function initialLoad(){
 		
-		if( $("#postsArea").height()< $("#text").height() ){
-			loadPrev(initialLoad);
+		if( $("#postsArea").height()< $("#text").height() && !log_end){
+			console.log("log_end: "+log_end);
 		} else{
 			$("#text").scrollTop( $("#postsArea").height())
 		}
@@ -217,7 +218,11 @@
 
 
 	$("#chanbutton").click(function(){
-		$("body").toggleClass("chanlist")
+		$("body").toggleClass("chanlist");
+	});
+
+	$("#text").click(function(){
+		$("body").toggleClass("chanlist");
 	});
 
 	</script>
