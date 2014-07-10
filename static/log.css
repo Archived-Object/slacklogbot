@@ -82,16 +82,16 @@ body {
 
 @media screen and (max-width: 700px) {
   #chanbutton {
-    left: 222px; }
+    left: -44px; }
 
   #text {
     left: 24px !important; }
 
-  body.chanlist #chanlist {
+  body.hidechanlist #chanlist {
     left: -24px;
     width: 0;
     margin-right: -24px; }
-  body.chanlist #chanbutton {
+  body.hidechanlist #chanbutton {
     left: 12px; } }
 #text {
   padding: 21px;

@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="{{url_for('static', filename='log.css')}}">
 
 </head>
-<body class="chanlist">
+<body class="hidechanlist">
 	<section id="chanlist">
 	<h2>CHANNELS</h2>
 	<ul>
@@ -93,6 +93,7 @@
 		}else{
 			$("#text").scrollTop( $("#postsArea").height() )
 		}
+		console.log($("#postsArea").height() );
 	}
 
 	function loadPrev(callback){
@@ -217,13 +218,16 @@
 	}
 
 
-	$("#chanbutton").click(function(){
-		$("body").toggleClass("chanlist");
+	$("#text").click(function(){
+		if(!$("body").hasClass("hidechanlist")){
+			$("body").addClass("hidechanlist");
+		}
 	});
 
-	$("#text").click(function(){
-		$("body").toggleClass("chanlist");
+	$("#chanbutton").click(function(){
+		$("body").toggleClass("hidechanlist");
 	});
+
 
 	</script>
 </body>
