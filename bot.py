@@ -81,7 +81,8 @@ def serveLog(channel):
 	return render_template("log.html",
 		channel_id=channel_id,
 		channel_name=channel,
-		content=log_json)
+		content=log_json,
+		channel_list=get_channel_list());
 
 @app.route('/log/backend/<channel_name>/<timestamp>/<number>')
 @app.route('/log/backend/<channel_name>/<timestamp>')
@@ -269,6 +270,20 @@ def get_channel_alias(alias):
 			return (x["id"])
 		else:
 			return None
+
+def get_channel_name(chanid):
+	x = db.aliases.find({"id":chanid}).sort([("$natural", -1)]).limit(1)[0];
+	if x:
+		return x["alias"]
+	else:
+		return "LOLNAME??"
+
+def get_channel_list():
+	channels = []
+	for chanid in db.collection_names():
+		if chanid.startswith("C02"):
+			channels.append( {"name":get_channel_name(chanid), "id":chanid})
+	return channels
 
 def makeSerializable(jayson):
 	for i in jayson if isinstance(jayson, dict) else range(len(jayson)):

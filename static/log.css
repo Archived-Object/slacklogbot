@@ -1,21 +1,68 @@
-#wrapper {
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
+* {
+  box-sizing: border-box;
+  padding: 0px;
+  margin: 0px; }
+
+#chanlist {
+  float: left;
+  width: 210px;
+  padding: 12px;
+  height: 100%;
+  background-color: #333333;
+  position: relative;
+  z-index: 2; }
+  #chanlist h2 {
+    font-family: Raleway;
+    font-weight: 200;
+    font-size: 32px;
+    color: #efefef;
+    margin: 6px;
+    text-align: center; }
+    #chanlist h2:after {
+      border-color: #efefef; }
+  #chanlist .channel {
+    font-family: Raleway;
+    font-weight: 300;
+    display: block;
+    margin: 6px;
+    font-size: 21px; }
+  #chanlist .channel a {
+    position: relative;
+    text-decoration: none;
+    transition: color 0.2s;
+    color: rgba(239, 239, 239, 0.5); }
+    #chanlist .channel a:before {
+      content: "#";
+      color: rgba(239, 239, 239, 0.5);
+      transition: color 0.2s; }
+    #chanlist .channel a:hover {
+      color: #efefef; }
+    #chanlist .channel a:hover:before {
+      color: #efefef; }
+  #chanlist .channel.current a {
+    color: #efefef; }
+    #chanlist .channel.current a:before {
+      color: #d95b43; }
+
+#text {
   background-color: #FBFBFB !important;
-  padding-top: 21px;
-  padding-bottom: 21px; }
-  #wrapper button {
+  padding: 21px;
+  position: absolute;
+  left: 210px;
+  top: 0;
+  bottom: 0;
+  right: 0; }
+  #text button {
     background-color: #333333;
-    color: #EFEFEF;
-    border: 1px solid #EFEFEF;
+    color: #efefef;
+    border: 1px solid #efefef;
     border-radius: 3px;
     display: block;
     height: 42px;
     padding: 12px;
     margin-left: auto;
     margin-right: auto; }
-  #wrapper button[disabled=disabled], #wrapper button:disabled {
+  #text button[disabled=disabled], #text button:disabled {
     background-color: #555555; }
 
 #postsArea {
@@ -37,6 +84,11 @@
   */ }
   .post .text {
     font-size: 14px; }
+    .post .text a {
+      color: #53777a;
+      transition: color 0.2s; }
+    .post .text a:hover {
+      color: #033649; }
   .post .info {
     font-weight: 300;
     display: block;

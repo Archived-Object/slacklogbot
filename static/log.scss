@@ -1,19 +1,96 @@
+$transtime: 0.2s;
 
-#wrapper{
+$darkback: #333333;
+$lightfont: #EFEFEF;
 
-  max-width:500px;
-  margin-left:auto;
-  margin-right:auto;
+$linkcolor_bar: #D95B43;
+$linkcolor_text: #53777A;
+$linkcolor_text_hover: #033649;
+
+$sidebarsize: 210px;
+
+*{
+  box-sizing:border-box;
+  padding:0px;
+  margin:0px;
+}
+
+#chanlist{
+  float: left;
+  width: $sidebarsize;
+  padding: 12px;
+
+  height: 100%;
+
+  background-color:$darkback;
+
+  position: relative;
+  z-index: 2;
+
+  h2{
+    font-family: Raleway;
+    font-weight:200;
+    font-size:32px;
+    color: $lightfont;
+    margin:6px;
+    text-align:center;
+
+    &:after{
+      border-color: $lightfont;
+    }
+  }
+
+  .channel{
+    font-family: Raleway;
+    font-weight:300;
+    display:block;
+    margin:6px;
+    font-size:21px;
+  }
+
+  .channel a{
+    position:relative;
+    text-decoration: none;
+    transition: color $transtime;
+    color: rgba($lightfont, 0.5);
+
+    &:before{
+      content:"#";
+      color: rgba($lightfont, 0.5);
+      transition: color $transtime;
+    }
+    &:hover{
+      color: $lightfont;
+    }
+    &:hover:before{
+      color: $lightfont;
+    }
+  }
+
+  .channel.current a{
+    color:$lightfont;
+    &:before{
+      color:$linkcolor_bar;
+      
+    }
+  }
+
+}
+
+#text{
 
   background-color:#FBFBFB !important;
-
-  padding-top:21px;
-  padding-bottom:21px;
+  padding:21px;
+  position:absolute;
+  left: $sidebarsize;
+  top:0;
+  bottom:0;
+  right:0;
 
   button{
-      background-color:#333333;
-      color: #EFEFEF;
-      border:1px solid #EFEFEF;
+      background-color:$darkback;
+      color: $lightfont;
+      border:1px solid $lightfont;
       border-radius:3px;
 
       display:block;
@@ -49,7 +126,13 @@
 */
   
   .text{
-    font-size:14px
+    font-size: 14px;
+    a{
+      color: $linkcolor_text;
+      transition: color $transtime;
+    } a:hover{
+      color: $linkcolor_text_hover;
+    }
   }
 
   .info{
