@@ -197,7 +197,7 @@ def reloadcfg(form, spl):
 		return rs("failed to load config %s"%(filename))
 
 def printconfig(form, spl):
-	return rs(json.dumps(cfg, indent=4, separators=(',', ': ')).replace("\"","\\").replace("\n","\\n"))
+	return rs(json.dumps(cfg, indent=4, separators=(',', ': ')).replace("\"","\\\"").replace("\n","\\n"))
 
 
 commands = {
@@ -207,7 +207,7 @@ commands = {
 #	u'note': recordnote,
 #	u'removenote': removenote.
 	u'reload': reloadcfg,
-	u'cfg?': printconfig
+	u'cfg': printconfig
 }
 
 #################################
