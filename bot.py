@@ -87,7 +87,7 @@ def serveLog(channel):
 @app.route('/log/backend/<channel_name>/<timestamp>/<number>')
 @app.route('/log/backend/<channel_name>/<timestamp>')
 @app.route('/log/backend/<channel_name>/')
-def serveLogBackend(channel_name, timestamp="0", number="20", direction=False):
+def serveLogBackend(channel_name, timestamp="0", number="40", direction=False):
 	ts, n = (0, 10)
 	try:
 		ts = float(timestamp)
@@ -106,7 +106,7 @@ def serveLogBackend(channel_name, timestamp="0", number="20", direction=False):
 		return json.dumps(makeSerializable(dict(d)))
 
 
-def logBackend(channel_id, timestamp=0.0, backwards=True, number=20):
+def logBackend(channel_id, timestamp=0.0, backwards=True, number=40):
 	posts=[]
 
 	#needs to be str bcz im dummmm

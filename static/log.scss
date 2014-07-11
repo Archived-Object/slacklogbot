@@ -19,17 +19,67 @@ $sidebarsize: 210px;
 	transition: all 0.4s;
 }
 
-body{
-	font-family:Raleway;
-	background-color: $greyback;
-}
-
 *{
   -moz-box-sizing: border-box !important;
 	box-sizing:border-box !important;
 	padding:0px;
 	margin:0px;
 }
+
+body{
+	font-family:Raleway;
+	background-color: $greyback;
+}
+
+::selection {
+	background: rgba($linkcolor_bar, 0);
+	}
+::-moz-selection {
+	background: rgba($linkcolor_bar, 0);
+}
+
+#chanlist{
+	::selection {
+		background: rgba($linkcolor_bar, 0.5);
+		color:$lightfont;
+		}
+	::-moz-selection {
+		background: rgba($linkcolor_bar, 0.5);
+	}
+}
+#text{
+	::selection {
+		background: rgba( $linkcolor_text, 0.85);
+		color:$lightfont;
+		}
+	::-moz-selection {
+		background: rgba( $linkcolor_text, 0.85);
+		color:$lightfont;
+	}
+}
+
+/* Let's get this party started */
+::-webkit-scrollbar {
+    width: 8px;
+}
+ 
+/* Track */
+::-webkit-scrollbar-track {
+	border-radius: 8px;
+	background-color: #F0F0F0;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background: rgba(0,0,0,0.3); 
+}
+::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(0,0,0,0.2);
+}
+
+
+
 
 #log_end{
 	font-size:24px;
@@ -39,6 +89,7 @@ body{
 	color:rgba(0,0,0,0.2);
 	display:block;
 	height:24px;
+	pointer-events:none;
 
 	@include transitions;
 
@@ -72,6 +123,8 @@ body{
 }
 
 #chanlist{
+
+
 	float: left;
 	width: $sidebarsize;
 	padding: 12px;
@@ -193,11 +246,14 @@ body{
 
 	.sonic{
 		display:block;
-		position:absolute;
+		position:fixed;
 		right:12px;
 
-		@include transitions;
+		@include transitions_long;
+
 		overflow:hidden;
+		pointer-events:none;
+		opacity:1;
 	}
 
 	.sonic.hidden{

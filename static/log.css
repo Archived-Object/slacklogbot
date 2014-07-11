@@ -1,12 +1,48 @@
-body {
-  font-family: Raleway;
-  background-color: #fbfbfb; }
-
 * {
   -moz-box-sizing: border-box !important;
   box-sizing: border-box !important;
   padding: 0px;
   margin: 0px; }
+
+body {
+  font-family: Raleway;
+  background-color: #fbfbfb; }
+
+::selection {
+  background: rgba(217, 91, 67, 0); }
+
+::-moz-selection {
+  background: rgba(217, 91, 67, 0); }
+
+#chanlist ::selection {
+  background: rgba(217, 91, 67, 0.5);
+  color: #efefef; }
+#chanlist ::-moz-selection {
+  background: rgba(217, 91, 67, 0.5); }
+
+#text ::selection {
+  background: rgba(83, 119, 122, 0.85);
+  color: #efefef; }
+#text ::-moz-selection {
+  background: rgba(83, 119, 122, 0.85);
+  color: #efefef; }
+
+/* Let's get this party started */
+::-webkit-scrollbar {
+  width: 8px; }
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 8px;
+  background-color: #F0F0F0; }
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3); }
+
+::-webkit-scrollbar-thumb:window-inactive {
+  background: rgba(0, 0, 0, 0.2); }
 
 #log_end {
   font-size: 24px;
@@ -15,6 +51,7 @@ body {
   color: rgba(0, 0, 0, 0.2);
   display: block;
   height: 24px;
+  pointer-events: none;
   transition: all 0.2s;
   display: block;
   opacity: 1; }
@@ -118,10 +155,12 @@ body {
     background-color: #555555; }
   #text .sonic {
     display: block;
-    position: absolute;
+    position: fixed;
     right: 12px;
-    transition: all 0.2s;
-    overflow: hidden; }
+    transition: all 0.4s;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 1; }
   #text .sonic.hidden {
     opacity: 0; }
   #text #loader_prev {

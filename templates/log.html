@@ -53,8 +53,30 @@
 
 		path: [
 			['line', 0, 20, 100, 20],
-			['line', 0, 20, 100, 20]
-		]
+			['line', 0, 20, 100, 20],
+		],
+
+		step: function(point, index, frame) {
+
+			// Here you can do custom stuff.
+			// `this._` is a HTML 2d Canvas Context
+
+			var sizeMultiplier = 2; // try changing this :)
+			
+			// Add frame number in lower-left corner
+			this._.fillText(0|frame*this.fps, 1, 99);
+			
+			this._.beginPath();
+			this._.moveTo(point.x, point.y);
+			this._.arc(
+				point.x, point.y,
+				index * sizeMultiplier, 0,
+				Math.PI*2, false
+			);
+			this._.closePath();
+			this._.fill();
+
+		}
 	};
 
 	loader_prev = new Sonic(sonicfg);
@@ -84,7 +106,6 @@
 		}
 	});
 
-	initialLoad();
 	function initialLoad(){
 		if( $("#postsArea").height()< $("#text").height() && !log_end){
 			loadPrev(initialLoad);
@@ -92,20 +113,20 @@
 		}else{
 			$("#text").scrollTop( $("#postsArea").height() )
 		}
-		console.log($("#postsArea").height() );
+		//console.log($("#postsArea").height() );
 	}
 
 	function loadPrev(callback){
 		callback = typeof callback !== 'undefined' ? callback : function(){};
 		ajaxing = true;
 		$("#loader_prev").removeClass("hidden");
-		setTimeout(function(){
-			$("#loader_prev").addClass("hidden");
+		console.log("backend/{{ channel_id }}/"+timestamp_old);
 			$.ajax("backend/{{ channel_id }}/"+timestamp_old,
 			{
 				success: function(data){
 					ajaxing=false;
-					//console.log(data);
+					$("#loader_prev").addClass("hidden");
+						//console.log(data);
 					if (data.length > 0 && data.charAt(0) != "!"){
 						var newj = eval("(" + data + ")");
 						timestamp_old = newj.oldest.timestamp;
@@ -118,6 +139,7 @@
 						 parseInt(($("#text").css("padding-top").replace('px', '')))
 						);
 					} else{
+						console.log(data);
 						$("#log_end").removeClass("hidden");
 						log_end = true;
 					}
@@ -128,14 +150,14 @@
 					console.log(errorThrow);
 				}
 			});
-		}, 500);
 	}
 
 	$(document).ready(function(){
 		timestamp_old = initial_json.oldest.timestamp;
 		timestamp_new = initial_json.newest.timestamp;
 		parseJson(initial_json, false)
-	});
+		initialLoad();
+});
 
 	function loadNext(){
 		ajaxing=true;
