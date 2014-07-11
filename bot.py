@@ -196,7 +196,8 @@ def reloadcfg(form, spl):
 	else:
 		return rs("failed to load config %s"%(filename))
 
-
+def printconfig(form, spl):
+	return rs(json.dumps(cfg))
 
 
 commands = {
@@ -205,7 +206,8 @@ commands = {
 #	u'notes': listnotes,
 #	u'note': recordnote,
 #	u'removenote': removenote.
-	u'reload': reloadcfg
+	u'reload': reloadcfg,
+	u'cfg?': printconfig
 }
 
 #################################
@@ -257,6 +259,8 @@ def save_channel_alias(alias, channel_id):
 		return False
 	else:
 		db.aliases.insert({"alias":alias, "id": channel_id})
+		return False
+
 
 #serving aliases for channel ids
 def get_channel_alias(alias):
