@@ -198,7 +198,7 @@ def reloadcfg(form, spl):
 
 def printconfig(form, spl):
 	print rs(json.dumps(cfg, indent=4, separators=(',', ': ')).replace("\"",""))
-	return rs(json.dumps(cfg, indent=4, separators=(',', ': ')).replace("\"",""))
+	return rs(json.dumps(cfg, indent=4, separators=(',', ': ')).replace("\"","").replace("\n","\\n"))
 
 
 commands = {
