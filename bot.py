@@ -197,7 +197,7 @@ def reloadcfg(form, spl):
 		return rs("failed to load config %s"%(filename))
 
 def printconfig(form, spl):
-	print rs(json.dumps(cfg, indent=4, separators=(',', ': ')).replace("\"","\''))
+	print rs(json.dumps(cfg, indent=4, separators=(',', ': ')).replace("\"","\'"))
 	return rs(json.dumps(cfg, indent=4, separators=(',', ': ')).replace("\"","\'"))
 
 
