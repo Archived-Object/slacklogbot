@@ -85,14 +85,21 @@ def serveLog(channel, postid=""):
 	);
 
 @app.route('/log/<channel>/<postid>')
-@app.route('/log/<channel>/<postid>/<forward>')
-@app.route('/log/<channel>/<postid>/<forward>/<backward>')
-def someshit(channel, postid):
+@app.route('/log/<channel>/<postid>/<nfront>')
+@app.route('/log/<channel>/<postid>/<nfront>/<nback>')
+def someshit(channel, postid, nfront="3", nback="20"):
 	channel_id = (get_channel_alias(channel) if (channel not in db.collection_names()) else channel)
 	if channel_id is None:
 		return render_template("error.html", msg="no channel '%s'"%(channel) )
 	elif not channel_id:
 		channel_id = channel
+
+	f, b = (3, 20)
+	try:
+		b = int(nback)
+		f = int(nfront)
+	except ValueError:
+		pass
 
 	referencePoint = db[channel_id].find_one({"_id":ObjectId(postid)})
 
@@ -104,7 +111,9 @@ def someshit(channel, postid):
 	log_json = json.dumps(makeSerializable(
 		dict(logBackend(
 			channel_id,
-			timestamp=referencePoint["timestamp"]
+			timestamp=referencePoint["timestamp"],
+			nback = b,
+			nfront = f
 			)
 		)
 	))
@@ -124,7 +133,7 @@ def someshit(channel, postid):
 @app.route('/log/backend/<channel_name>/<timestamp>')
 @app.route('/log/backend/<channel_name>/')
 def serveLogBackend(channel_name, timestamp="0", nback="40", nfront="0"):
-	ts, f, b = (0, 40, 40)
+	ts, f, b = (0, 0, 40)
 	try:
 		ts = float(timestamp)
 		b = int(nback)
@@ -143,7 +152,7 @@ def serveLogBackend(channel_name, timestamp="0", nback="40", nfront="0"):
 		return json.dumps(makeSerializable(dict(d)))
 
 
-def logBackend(channel_id, timestamp=0.0, nback=40, nfront=0):
+def logBackend(channel_id, timestamp=0.0, nback=20, nfront=0):
 	posts=[]
 
 	#needs to be str bcz im dummmm
@@ -151,11 +160,19 @@ def logBackend(channel_id, timestamp=0.0, nback=40, nfront=0):
 		({"timestamp":{"$lte": str(timestamp)}} if timestamp !=0.0 else {})
 		).sort([("timestamp",-1)]).limit(nback)
 
-	forward = db[channel_id].find(
-		({"timestamp":{"$gt": str(timestamp)}} if timestamp !=0.0 else {})
-		).sort([("timestamp",-1)]).limit(nfront+1)
+	if timestamp != 0.0:
+		forward = db[channel_id].find(
+			({"timestamp":{"$gt": str(timestamp)}})
+			).sort([("timestamp",1)]).limit(nfront+1)
+	else:
+		forward = []
 
-	recent_n = list(forward) + list(back);
+	#resolve before sorting
+	lb = list(back)
+	lf = list(forward)
+	print lf;
+
+	recent_n = sorted(lf + lb, key=lambda item: item["timestamp"], reverse=True) 
 
 	if timestamp == 0.0:
 		timestamp = recent_n[-1]["timestamp"]
