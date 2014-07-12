@@ -11,6 +11,9 @@ $linkcolor_text_hover: #033649;
 
 $sidebarsize: 210px;
 
+$imgwidth: 36px;
+$imgpadding: 12px;
+
 @mixin transitions{
 	transition: all $transtime;
 }
@@ -224,6 +227,7 @@ body{
 	overflow-y:scroll;
 	overflow-x:hidden;
 
+
 	@include transitions_long;
 
 	button{
@@ -277,7 +281,7 @@ body{
 .post{
 	display:block;
 	padding:6px;
-	margin:18px;
+	margin-top:18px;
 	margin-bottom:0;
 	margin-right:0;
 	position:relative;
@@ -295,6 +299,7 @@ body{
 	}
 
 	.text{
+		margin-left:$imgwidth + $imgpadding;
 		font-size: 14px;
 		a{
 			color: $linkcolor_text;
@@ -314,17 +319,14 @@ body{
 			vertical-align:middle;
 			}
 		img{
-			margin-right:12px;
+			margin-right:$imgpadding;
+			width:$imgwidth;
+			height:$imgwidth;
+			border-radius:3px;
 		}
 
 		.userid{
 			display:none;
-		}
-
-		img{
-			width:42px;
-			height:42px;
-			border-radius:3px;
 		}
 
 		.bloque section{
@@ -364,11 +366,53 @@ body{
 
 	&.subcomment{
 
+		.text{
+			margin-left	:0;
+		}
+
 		margin-top:6px;
 		margin-bottom:6px;
 
 		.info{
-			display:none;
+			float:left;
+			margin-bottom:0;
+			.username{
+				display:none;
+			}
+			.timestamp{
+				display:inline-block;
+				width: $imgwidth + $imgpadding;
+				span{
+					display:none;
+				}
+				a{
+					display:block;
+					width:100%;
+					height:100%;
+					position:relative;
+					padding-right:$imgpadding;
+					text-align:right;
+				}
+				:before{
+					content:"\f0c1   link";
+					font-size:12px;
+					font-family:FontAwesome;
+					color:rgba(0, 0, 0, 0);
+					vertical-align:top;
+
+					@include transitions;
+				}
+				:hover:before{
+					color:rgba(0, 0, 0, 0.2);
+				}
+
+				:after{
+					display:none;
+				}
+			}
+		}
+
+		.text{
 		}
 
 		img{

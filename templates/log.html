@@ -7,6 +7,7 @@
 	<link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Raleway:400,300,500,600'>
 	<link rel="stylesheet" href="{{url_for('static', filename='common.css')}}">
 	<link rel="stylesheet" href="{{url_for('static', filename='log.css')}}">
+	<link rel="stylesheet" href="{{url_for('static', filename='FontAwesome/font-awesome.css')}}">
 	<link rel="icon" type="image/png" href="{{url_for('static', filename='LOG.png')}}">
 
 
@@ -252,7 +253,7 @@
 
 								"<section class='timestamp'>" +
 									"<a href='/log/{{ channel_name }}/"+ j.data[key]._id +"'>" +
-									 readableDateTime(date) + "</a>"+
+									 "<span>" + readableDateTime(date) + "</span></a>"+
 								"<\/section>" +
 								"<\/section>"+
 							"<\/section>" +
