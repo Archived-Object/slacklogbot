@@ -157,8 +157,6 @@ def logBackend(channel_id, timestamp=0.0, nback=40, nfront=0):
 
 	recent_n = list(forward) + list(back);
 
-	print recent_n
-
 	if timestamp == 0.0:
 		timestamp = recent_n[-1]["timestamp"]
 
