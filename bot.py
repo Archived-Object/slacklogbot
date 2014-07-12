@@ -170,8 +170,7 @@ def logBackend(channel_id, timestamp=0.0, nback=20, nfront=0):
 	#resolve before sorting
 	lb = list(back)
 	lf = list(forward)
-	print lf;
-
+	
 	recent_n = sorted(lf + lb, key=lambda item: item["timestamp"], reverse=True) 
 
 	if timestamp == 0.0:
