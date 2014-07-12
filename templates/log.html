@@ -7,6 +7,8 @@
 	<link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Raleway:400,300,500,600'>
 	<link rel="stylesheet" href="{{url_for('static', filename='common.css')}}">
 	<link rel="stylesheet" href="{{url_for('static', filename='log.css')}}">
+	<link rel="icon" type="image/png" href="{{url_for('static', filename='LOG.png')}}">
+
 
 </head>
 <body class="hidechanlist">
@@ -14,7 +16,8 @@
 	<h2>CHANNELS</h2>
 	<ul>
 		{% for channel in channel_list %}
-			<li class="channel {% if channel.id==channel_id %}current{% endif %}" data-id="{{ channel.id }}">
+			<li class="channel {% if channel.id==channel_id %}current{% endif %}" 
+			data-id="{{ channel.id }}" data-name="{{ channel.name }}">
 				<a href="/log/{{ channel.name }}">{{ channel.name }}</a>
 			</li>
 		{% endfor %}
@@ -96,6 +99,8 @@
 	var initial_json = {{ content|safe }};
 	var ajaxing = false;
 
+	var focus = {% if focus %} "{{ focus }}" {% else %} null {% endif %};
+
 	function ObjectId(c){
 		return c
 	}
@@ -105,16 +110,6 @@
 			loadPrev();
 		}
 	});
-
-	function initialLoad(){
-		if( $("#postsArea").height()< $("#text").height() && !log_end){
-			loadPrev(initialLoad);
-			$("#text").scrollTop( $("#postsArea").height() )
-		}else{
-			$("#text").scrollTop( $("#postsArea").height() )
-		}
-		//console.log($("#postsArea").height() );
-	}
 
 	function loadPrev(callback){
 		callback = typeof callback !== 'undefined' ? callback : function(){};
@@ -152,11 +147,30 @@
 			});
 	}
 
+	function initialLoad(){
+		if( $("#postsArea").height()< $("#text").height() && !log_end){
+			loadPrev(initialLoad);
+			$("#text").scrollTop( $("#postsArea").height() )
+		}else{
+			$("#text").scrollTop( $("#postsArea").height() )
+		}
+		//console.log($("#postsArea").height() );
+	}
+
+	function hilightFocus(){
+		fc = $(".post[data-post='"+ focus +"']");
+		console.log(".post:contains([data-post='"+ focus +"']");
+		console.log(fc);
+		$(fc).addClass("hilighted");
+		//TODO scrollto
+	}
+
 	$(document).ready(function(){
 		timestamp_old = initial_json.oldest.timestamp;
 		timestamp_new = initial_json.newest.timestamp;
 		parseJson(initial_json, false)
 		initialLoad();
+		hilightFocus();
 });
 
 	function loadNext(){
@@ -173,9 +187,10 @@
 		}
 	}
 
-	function readableDate(date){
-		tsh = ((date.getHours() < 10) ? "0"+date.getHours() : date.getHours()%13);
-		tsm = ((date.getMinutes() < 10) ? "0"+date.getMinutes() : date.getMinutes());
+	function readableDateTime(date){
+		h = (date.getHours()+12)%24
+		tsh = (h < 9 ? "0"+h : (h%13).toString());
+		tsm = ((date.getMinutes() < 10) ? "0"+date.getMinutes() : date.getMinutes().toString() );
 
 		ampm = ((date.getHours() <= 12) ? "AM" : "PM");
 
@@ -203,6 +218,15 @@
 				slackText = slackText.replace(nl,"<br>")
 			}
 		}
+		//channel tags
+		channels = slackText.match(/<#[^<]*>/g)
+		if (channels != null){
+			for (var i = 0; i < channels.length; i++) {
+				chanid = channels[i].substring(2,channels[i].length-1);
+				channel = $(".channel[data-id='"+chanid+"']");
+			}
+		}
+		
 		return slackText
 	}
 
@@ -213,7 +237,7 @@
 			var date = new Date(0);
 			date.setUTCSeconds(parseFloat(j.data[key].timestamp));
 
-			newelement =           $("<section class='post'>" + 
+			newelement =           $("<section class='post' data-post="+ j.data[key]["_id"] +">" + 
 
 							"<section class='info'>" + 
 								"<section class='userid'>" +
@@ -228,7 +252,7 @@
 
 								"<section class='timestamp'>" +
 									"<a href='/log/{{ channel_name }}/"+ j.data[key]._id +"'>" +
-									 readableDate(date) + "</a>"+
+									 readableDateTime(date) + "</a>"+
 								"<\/section>" +
 								"<\/section>"+
 							"<\/section>" +

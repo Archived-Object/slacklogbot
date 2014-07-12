@@ -68,8 +68,7 @@ def redeploy():
 	return rs("reloading: executed command %s"%(cfg['onreload']))
 
 @app.route('/log/<channel>')
-def serveLog(channel):
-
+def serveLog(channel, postid=""):
 	channel_id = (get_channel_alias(channel) if (channel not in db.collection_names()) else channel)
 	if channel_id is None:
 		return render_template("error.html", msg="no channel '%s'"%(channel) )
@@ -82,22 +81,60 @@ def serveLog(channel):
 		channel_id=channel_id,
 		channel_name=channel,
 		content=log_json,
-		channel_list=get_channel_list());
+		channel_list=get_channel_list()
+	);
 
-@app.route('/log/backend/<channel_name>/<timestamp>/<number>')
+@app.route('/log/<channel>/<postid>')
+@app.route('/log/<channel>/<postid>/<forward>')
+@app.route('/log/<channel>/<postid>/<forward>/<backward>')
+def someshit(channel, postid):
+	channel_id = (get_channel_alias(channel) if (channel not in db.collection_names()) else channel)
+	if channel_id is None:
+		return render_template("error.html", msg="no channel '%s'"%(channel) )
+	elif not channel_id:
+		channel_id = channel
+
+	referencePoint = db[channel_id].find_one({"_id":ObjectId(postid)})
+
+	if not referencePoint:
+		return render_template(
+			"error.html", 
+			msg="no post '%s' in %s"%(postid, channel_id))
+
+	log_json = json.dumps(makeSerializable(
+		dict(logBackend(
+			channel_id,
+			timestamp=referencePoint["timestamp"]
+			)
+		)
+	))
+
+	return render_template("log.html",
+		channel_id=channel_id,
+		channel_name=channel,
+		content=log_json,
+		channel_list=get_channel_list(),
+		focus=postid
+	);
+ 
+
+
+@app.route('/log/backend/<channel_name>/<timestamp>/<nback>/<nfront>')
+@app.route('/log/backend/<channel_name>/<timestamp>/<nback>')
 @app.route('/log/backend/<channel_name>/<timestamp>')
 @app.route('/log/backend/<channel_name>/')
-def serveLogBackend(channel_name, timestamp="0", number="40", direction=False):
-	ts, n = (0, 10)
+def serveLogBackend(channel_name, timestamp="0", nback="40", nfront="0"):
+	ts, f, b = (0, 40, 40)
 	try:
 		ts = float(timestamp)
-		n = int(number)
+		b = int(nback)
+		f = int(nfront)
 	except ValueError:
 		return "!that's not a number, dummy!"
 
 	d =	logBackend(
 				get_channel_alias(channel_name),
-				ts, not bool(direction), n
+				ts, b, f
 			)
 
 	if isinstance(d, str):
@@ -106,25 +143,29 @@ def serveLogBackend(channel_name, timestamp="0", number="40", direction=False):
 		return json.dumps(makeSerializable(dict(d)))
 
 
-def logBackend(channel_id, timestamp=0.0, backwards=True, number=40):
+def logBackend(channel_id, timestamp=0.0, nback=40, nfront=0):
 	posts=[]
 
 	#needs to be str bcz im dummmm
-	recent_n = db[channel_id].find(
-		({"timestamp":{"$lt": str(timestamp)}} if timestamp !=0.0 else {})
-		).sort([("timestamp",-1)]).limit(number)
+	back = db[channel_id].find(
+		({"timestamp":{"$lte": str(timestamp)}} if timestamp !=0.0 else {})
+		).sort([("timestamp",-1)]).limit(nback)
+
+	forward = db[channel_id].find(
+		({"timestamp":{"$gt": str(timestamp)}} if timestamp !=0.0 else {})
+		).sort([("timestamp",-1)]).limit(nfront+1)
+
+	recent_n = list(forward) + list(back);
+
+	print recent_n
 
 	if timestamp == 0.0:
-		timestamp = recent_n[recent_n.count()-1]["timestamp"]
+		timestamp = recent_n[-1]["timestamp"]
 
 	posts = list(recent_n)
 	
 	if len(posts) == 0:
-		return "!no posts timestamp < %s, limit %s, (%s, %sP)"%(
-					timestamp, number,
-					timestamp.__class__.__name__,
-					number.__class__.__name__
-				)
+		return "!no posts in range specified"
 
 	old = min(posts, key=lambda a: a["timestamp"])
 	new = max(posts, key=lambda a: a["timestamp"])
@@ -261,7 +302,6 @@ def save_channel_alias(alias, channel_id):
 		db.aliases.insert({"alias":alias, "id": channel_id})
 		return False
 
-
 #serving aliases for channel ids
 def get_channel_alias(alias):
 	if alias in db.collection_names():
@@ -296,7 +336,6 @@ def makeSerializable(jayson):
 		elif isinstance(jayson[i], ObjectId):
 			jayson[i] = str(jayson[i])
 	return jayson
-
 
 def udict_to_ascii(jayson):
 	return dict([

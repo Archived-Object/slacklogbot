@@ -170,9 +170,10 @@ body {
 
 .post {
   display: block;
-  margin: 24px;
-  margin-bottom: 6px;
-  margin-right: 6px;
+  padding: 6px;
+  margin: 18px;
+  margin-bottom: 0;
+  margin-right: 0;
   position: relative;
   /*
   	&:before{
@@ -183,6 +184,8 @@ body {
   		background: radial-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0));
   	}
   */ }
+  .post.hilighted {
+    background-color: #EEEEEE !important; }
   .post .text {
     font-size: 14px; }
     .post .text a {
