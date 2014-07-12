@@ -115,8 +115,8 @@
 		callback = typeof callback !== 'undefined' ? callback : function(){};
 		ajaxing = true;
 		$("#loader_prev").removeClass("hidden");
-		console.log("backend/{{ channel_id }}/"+timestamp_old);
-			$.ajax("backend/{{ channel_id }}/"+timestamp_old,
+		console.log("/log/backend/{{ channel_id }}/"+timestamp_old);
+			$.ajax("/log/backend/{{ channel_id }}/"+timestamp_old,
 			{
 				success: function(data){
 					ajaxing=false;
