@@ -255,8 +255,10 @@ def printconfig(form, spl):
 	return rs(json.dumps(cfg, indent=4, separators=(',', ': ')).replace("\"","\\\"").replace("\n","\\n"))
 
 def fuckmsg(form, spl):
-    return rs(u'(\uFF61 \u2256 \u0E34 \u203F \u2256 \u0E34) <(' +
-                u' '.join(spl) + ")"), 
+    return rs(u'(\uFF61 \u2256 \u0E34 \u203F \u2256 \u0E34)' +
+            (if (len(spl) > 2) 
+                (u'<(' + u' '.join(spl[1:]) + ")") 
+                else u'')), 
 
 
 commands = {
