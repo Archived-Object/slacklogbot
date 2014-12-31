@@ -256,8 +256,8 @@ def printconfig(form, spl):
 
 def fuckmsg(form, spl):
     return rs(u'(\uFF61 \u2256 \u0E34 \u203F \u2256 \u0E34)' +
-            (if (len(spl) > 2) 
-                (u'<(' + u' '.join(spl[1:]) + ")") 
+            ((u'<(' + u' '.join(spl[1:]) + ")") 
+                if (len(spl) > 2)
                 else u'')), 
 
 
