@@ -254,10 +254,14 @@ def reloadcfg(form, spl):
 def printconfig(form, spl):
 	return rs(json.dumps(cfg, indent=4, separators=(',', ': ')).replace("\"","\\\"").replace("\n","\\n"))
 
+def fuckmsg(form, spl):
+    return rs(u'(\uFF61 \u2256 \u0E34 \u203F \u2256 \u0E34) '
+                u' '.join(spl)), 
+
 
 commands = {
 	u'stats': statsparser,
-	u'fuck': lambda a, b: rs(u'(\uFF61 \u2256 \u0E34 \u203F \u2256 \u0E34)'),
+	u'fuck': fuckmsg,
 #	u'notes': listnotes,
 #	u'note': recordnote,
 #	u'removenote': removenote.
